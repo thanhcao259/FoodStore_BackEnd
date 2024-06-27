@@ -20,6 +20,7 @@ public class CategoryMapperImpl implements ICategoryMapper {
         categoryDTO.setName(category.getName());
         categoryDTO.setDescription(category.getDescription());
         categoryDTO.setUrlImage(category.getImage());
+        categoryDTO.setIdentity(category.getIdentity());
         return categoryDTO;
     }
 

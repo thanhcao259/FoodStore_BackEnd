@@ -71,7 +71,6 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
-        System.out.println("Begin login: "+loginDTO);
         try {
             Authentication authentication = authManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword())
@@ -80,9 +79,9 @@ public class LoginController {
 
             final UserDetails userDetails = userDetailsService.loadUserByUsername(loginDTO.getUsername());
             final String token = JwtUtils.generateToken(userDetails.getUsername());
-            log.info("Controller token: {}", token);
-            log.info("Controller username: {}", userDetails.getUsername());
-            log.info("principal: {}", userDetails.getAuthorities().toString());
+//            log.info("Controller token: {}", token);
+//            log.info("Controller username: {}", userDetails.getUsername());
+//            log.info("principal: {}", userDetails.getAuthorities().toString());
             return ResponseEntity.ok(new JwtResponseDTO(token, userDetails.getUsername(), userDetails.getAuthorities()));
         }
         catch (Exception e) {

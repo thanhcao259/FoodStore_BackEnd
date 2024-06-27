@@ -3,7 +3,6 @@ package com.example.store.entity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -37,7 +36,7 @@ public class Order {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "pay_id", referencedColumnName = "id")
-    private PayInfo payInfo;
+    private VnPayInfo vnPayInfo;
 
     @OneToMany(mappedBy = "order",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference

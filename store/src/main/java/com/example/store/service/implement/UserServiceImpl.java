@@ -3,6 +3,7 @@ package com.example.store.service.implement;
 import com.example.store.dto.RegistrationDTO;
 import com.example.store.dto.UserDTO;
 import com.example.store.entity.Provider;
+import com.example.store.entity.Role;
 import com.example.store.entity.User;
 import com.example.store.exception.PasswordIncorrectException;
 import com.example.store.exception.UserNotFoundException;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -123,7 +125,11 @@ public class UserServiceImpl implements IUserService {
             throw new UserNotFoundException("User not found"+username);
         }
         User user = existingUser.get();
-//        user.setUsername(userDTO.getUsername());
+
+        List<Role> roles = new ArrayList<>(user.getRoles());
+        String identity = generateIdentity(roles.get(0).getName(), userDTO.getUsername());
+        user.setIdentity(identity);
+
         user.setFullName(userDTO.getFullName());
         user.setEmail(userDTO.getEmail());
         user.setPhone(userDTO.getPhone());
@@ -138,11 +144,12 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public UserDTO updateUser(Long userId, UserDTO userDTO) {
-        Optional<User> existingUser = userRepository.findById(userId);
-        if (existingUser.isEmpty()) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) {
             throw new UserNotFoundException("User not found");
         }
-        User user = existingUser.get();
+        User user = optionalUser.get();
+
         user.setUsername(userDTO.getUsername());
         user.setFullName(userDTO.getFullName());
         user.setEmail(userDTO.getEmail());
@@ -220,11 +227,6 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public User loginWithFB(CustomOAuth2User customUser, Provider provider) {
-//        User user = new User();
-//        user.setUsername(customUser.getName());
-//        user.setEmail(customUser.getEmail());
-//        user.setProvider(provider);
-//        return userRepository.save(user);
         return null;
     }
 
@@ -234,5 +236,16 @@ public class UserServiceImpl implements IUserService {
         message.setSubject(subject);
         message.setText(text);
         mailSender.send(message);
+    }
+
+    private String generateIdentity(String role, String username) {
+        String strRand = String.valueOf(Math.round(Math.random() * 10000));
+        String strRole = "";
+        username = username.replaceAll(" ", "").toUpperCase();
+        if(role.equals("CUSTOMER")){
+            strRole ="CS";
+        } else if (role.equals("ADMIN")) {
+            strRole = "AD";
+        } return strRole+"_"+username+"_"+strRand;
     }
 }

@@ -41,8 +41,8 @@ public class OrderMapperImpl implements IOrderMapper {
             cartItemResponseDTOs.add(cartItemMapper.toResponseDTOs(item));
         } orderResponseDTO.setCartItemResponseDTOs(cartItemResponseDTOs);
 
-        if(order.getPayInfo()!= null){
-            orderResponseDTO.setVnPayResponseDTO(vnPayMapper.toDTO(order.getPayInfo()));
+        if(order.getVnPayInfo()!= null){
+            orderResponseDTO.setVnPayResponseDTO(vnPayMapper.toDTO(order.getVnPayInfo()));
         }
         return orderResponseDTO;
     }

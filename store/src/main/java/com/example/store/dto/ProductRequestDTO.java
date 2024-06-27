@@ -16,6 +16,7 @@ public class ProductRequestDTO {
     private double price;
     private String urlImage;
     private String description;
+    private String identity;
 
     public ProductRequestDTO(String name, Long category_id, int available, double discount, double price, String urlImage, String description) {
         this.name = name;

@@ -17,8 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class CategoryServiceImpl implements ICategoryService {
@@ -54,6 +53,8 @@ public class CategoryServiceImpl implements ICategoryService {
     @Transactional
     @Override
     public CategoryDTO createCategory(CategoryDTO categoryDTO, String username) {
+        String cateName = categoryDTO.getName();
+        String identity = generateIdentity(cateName);
         Optional<User> user = userRepository.findByUsername(username);
         if(user.isEmpty()) {
             throw new UserNotFoundException("Not found user: "+username);
@@ -63,6 +64,7 @@ public class CategoryServiceImpl implements ICategoryService {
         category.setUserUpdated(user.get());
         category.setCreatedDate(ZonedDateTime.now());
         category.setUpdatedDate(ZonedDateTime.now());
+        category.setIdentity(identity);
         categoryRepository.save(category);
         return categoryDTO;
     }
@@ -70,18 +72,22 @@ public class CategoryServiceImpl implements ICategoryService {
     @Transactional
     @Override
     public CategoryDTO updateCategoryById(String username, Long id, CategoryDTO categoryDTO) {
+        String cateName = categoryDTO.getName();
+        String identity = generateIdentity(cateName);
         Optional<User> user = userRepository.findByUsername(username);
         if(user.isEmpty()) {
             throw new UserNotFoundException("Not found user: "+username);
-        } Optional<Category> existedCategory = categoryRepository.findById(id);
-        if(existedCategory.isEmpty()) {
+        } Optional<Category> optionalCategory = categoryRepository.findById(id);
+        if(optionalCategory.isEmpty()) {
             throw new CategoryNotFoundException("Not found category: "+id);
-        } Category category = existedCategory.get();
+        }
+        Category category = optionalCategory.get();
         category.setUpdatedDate(ZonedDateTime.now());
         category.setUserUpdated(user.get());
         category.setName(categoryDTO.getName());
         category.setDescription(categoryDTO.getDescription());
         category.setImage(categoryDTO.getUrlImage());
+        category.setIdentity(identity);
 //        if(!categoryDTO.getUrlImage().isEmpty()){
 //            category.setImage(categoryDTO.getUrlImage());
 //        }
@@ -106,5 +112,15 @@ public class CategoryServiceImpl implements ICategoryService {
         List<Category> categories = categoryRepository.findAll();
         List<CategoryDTO> categoriesDTOs = categoryMapper.toDTOs(categories);
         return categoriesDTOs;
+    }
+
+    private String generateIdentity(String myStr){
+        String rs = "";
+        String regex = " ";
+        myStr = myStr.replaceAll("\\s+", " ");
+
+        for(String s : myStr.split(regex)){
+            rs += s.charAt(0);
+        } return rs.toUpperCase();
     }
 }

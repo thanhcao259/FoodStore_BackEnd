@@ -79,8 +79,7 @@ public class UserController {
             if(image != null) {
                 imgUrl = uploadFileService.uploadFile(image);
             }
-//            logg.info("Dto: {}, {}, {}, {}, {}, {}", username, fullName, phone, birthDate, email, imgUrl);
-            UserDTO userDTO = new UserDTO(fullName,email, phone, birthDate, imgUrl);
+            UserDTO userDTO = new UserDTO(username,fullName,email, phone, imgUrl, birthDate);
             return new ResponseEntity<>(userService.updateUser(username, userDTO), HttpStatus.OK);
         } catch (AuthenticationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);

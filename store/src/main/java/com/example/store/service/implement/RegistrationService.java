@@ -35,9 +35,9 @@ public class RegistrationService implements IRegisterService {
     @Transactional
     @Override
     public void registration(RegistrationDTO registrationDTO) {
-        Optional<User> optionalUser = userRepository.findByUsername(registrationDTO.getUsername());
+        Optional<User> optionalUser = userRepository.findByEmailAndUsername(registrationDTO.getEmail(), registrationDTO.getUsername());
         if (optionalUser.isPresent()) {
-            throw new UserNameExistedException("Username already existed");
+            throw new UserNameExistedException("Email or username already existed");
         }
         Optional<Role> optionalRole = roleRepository.findByName("USER");
         if(optionalRole.isEmpty()){

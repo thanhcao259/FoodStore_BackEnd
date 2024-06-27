@@ -26,6 +26,7 @@ public class UserMapperImpl implements IUserMapper {
         ZonedDateTime updatedDate = user.getUpdatedDate();
         UserDTO userDTO = new UserDTO();
         userDTO.setId(user.getId());
+        userDTO.setIdentity(user.getIdentity());
         userDTO.setUsername(user.getUsername());
         userDTO.setFullName(user.getFullName());
         userDTO.setEmail(user.getEmail());

@@ -127,6 +127,9 @@ public class ProductController {
             String imgUrl = "";
             if (multipartFile != null) {
                 imgUrl = uploadFileService.uploadFile(multipartFile);
+            } else {
+                ProductResponseDTO responseDTO = productService.getProductById(id);
+                imgUrl = responseDTO.getUrlImage();
             }
             ProductRequestDTO newProduct = new ProductRequestDTO(prodName, cateId, available, discount, price, imgUrl, description);
 

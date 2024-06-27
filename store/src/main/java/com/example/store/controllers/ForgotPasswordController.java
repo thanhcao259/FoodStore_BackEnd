@@ -1,10 +1,8 @@
 package com.example.store.controllers;
 
 import com.example.store.dto.ResetPasswordDTO;
-import com.example.store.entity.ForgotPassword;
 import com.example.store.exception.ForgotPasswordException;
 import com.example.store.exception.UserNotFoundException;
-import com.example.store.repository.ForgotPasswordRepository;
 import com.example.store.repository.IUserRepository;
 import com.example.store.service.EmailService;
 import com.example.store.service.ForgotPasswordService;
@@ -24,14 +22,12 @@ public class ForgotPasswordController {
     private final IUserRepository userRepository;
     private final IUserService userService;
     private final EmailService emailService;
-    private final ForgotPasswordRepository fpRepository;
     private final ForgotPasswordService fpService;
 
-    public ForgotPasswordController(IUserRepository userRepository, IUserService userService, EmailService emailService, ForgotPasswordRepository forgotPasswordRepository, ForgotPasswordService fpService) {
+    public ForgotPasswordController(IUserRepository userRepository, IUserService userService, EmailService emailService, ForgotPasswordService fpService) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.emailService = emailService;
-        this.fpRepository = forgotPasswordRepository;
         this.fpService = fpService;
     }
 

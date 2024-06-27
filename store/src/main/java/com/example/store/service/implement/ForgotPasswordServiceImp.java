@@ -6,7 +6,6 @@ import com.example.store.entity.User;
 import com.example.store.exception.ForgotPasswordException;
 import com.example.store.exception.UserNotFoundException;
 import com.example.store.mapper.IUserMapper;
-import com.example.store.repository.ForgotPasswordRepository;
 import com.example.store.repository.IUserRepository;
 import com.example.store.service.EmailService;
 import com.example.store.service.ForgotPasswordService;
@@ -28,13 +27,9 @@ public class ForgotPasswordServiceImp implements ForgotPasswordService {
     @Autowired
     private IUserService userService;
     @Autowired
-    private ForgotPasswordRepository fpRepository;
-    @Autowired
     private IUserRepository userRepository;
     @Autowired
     private EmailService emailService;
-    @Autowired
-    private IUserMapper userMapper;
     @Autowired
     private PasswordEncoder passwordEncoder;
 

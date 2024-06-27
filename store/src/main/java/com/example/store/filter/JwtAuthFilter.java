@@ -43,7 +43,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
         token = authHeader.substring(7);
-        logger.info("Token: {}", token);
+//        logger.info("Token: {}", token);
         try {
             username = JwtUtils.extractUsername(token);
         } catch (Exception e) {
@@ -52,7 +52,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            logger.info("username_3: {}", userDetails.getUsername());
+//            logger.info("username_3: {}", userDetails.getUsername());
 
             if (JwtUtils.validateToken(token, username)) {
                 UsernamePasswordAuthenticationToken authToken

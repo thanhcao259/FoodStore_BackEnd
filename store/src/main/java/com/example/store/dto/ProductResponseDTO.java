@@ -1,14 +1,12 @@
 package com.example.store.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.time.ZonedDateTime;
 import java.util.List;
 
-@Data
+@Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductResponseDTO {
@@ -28,4 +26,5 @@ public class ProductResponseDTO {
     private String description;
     @Value("0")
     private Double rate;
+    private String identity;
 }

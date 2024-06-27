@@ -115,21 +115,23 @@ public class OrderServiceImpl implements IOrderService {
         }
         User user = optionalUser.get();
         Cart cart = user.getCart();
-        List<CartItem> cartItems = cart.getCartItems();
+        List<CartItem> cartItems = cartItemRepository.findAllByCartIdAndIsDeleted(cart.getId());
         if (cartItems.isEmpty()) {
             throw new CartItemNotFoundException("Cart item not found");
         }
         Optional<Address> optionalAddress = addressRepository.findByIdAndUserId(orderPaymentDTO.getAddressId(), user.getId());
         if (optionalAddress.isEmpty()) {
-            throw new AddressNotFoundException("Not found address " + orderPaymentDTO.getAddressId());
+            throw new AddressNotFoundException("Not found address ");
         }
         Address address = optionalAddress.get();
         // Setup for new order
         Order order = new Order();
         order.setAddress(address);
+        order.setName(orderPaymentDTO.getName());
         order.setUser(user);
         order.setPhone(orderPaymentDTO.getPhone());
         order.setDeliveryTime(ZonedDateTime.now());
+        order.setCartItem(cartItems);
 
         // Total Price
         double totalPrices = 0.0;
@@ -150,17 +152,18 @@ public class OrderServiceImpl implements IOrderService {
         user.getOrders().add(order);
 
         // Payment
-        PayInfo payInfo = new PayInfo();
-        payInfo.setPayAmount(orderPaymentDTO.getVnpAmount());
-        payInfo.setPayBankCode(orderPaymentDTO.getVnpBankCode());
-        payInfo.setPayTransactionNo(orderPaymentDTO.getVnpTransactionNo());
-        payInfo.setPayOrderInfo(orderPaymentDTO.getVnpOrderInfo());
-        payInfo.setPaySecurityHash(orderPaymentDTO.getVnpSecureHash());
-        payInfo.setPayDate(orderPaymentDTO.getVnpPayDate());
-        payInfo.setPayTxnRef(orderPaymentDTO.getVnpTxnRef());
+        VnPayInfo vnPayInfo = new VnPayInfo();
+        vnPayInfo.setVnpAmount(orderPaymentDTO.getVnpAmount());
+        vnPayInfo.setVnpBankCode(orderPaymentDTO.getVnpBankCode());
+        vnPayInfo.setVnpTransactionNo(orderPaymentDTO.getVnpTransactionNo());
+        vnPayInfo.setVnpOrderInfo(orderPaymentDTO.getVnpOrderInfo());
+        vnPayInfo.setVnpSecurityHash(orderPaymentDTO.getVnpSecureHash());
+        vnPayInfo.setVnpPayDate(orderPaymentDTO.getVnpPayDate());
+        vnPayInfo.setVnpTxnRef(orderPaymentDTO.getVnpTxnRef());
 
-        order.setPayInfo(payInfo);
+        order.setVnPayInfo(vnPayInfo);
         orderRepository.save(order);
+        logger.info("PayInfo: {}, {}", vnPayInfo.getVnpTxnRef(), vnPayInfo.getVnpTransactionNo());
         // Remove to available product
         for (CartItem item : cartItems) {
             Long proId = item.getProduct().getId();

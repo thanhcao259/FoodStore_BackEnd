@@ -39,4 +39,7 @@ public class Category {
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     private List<Product> products;
 
+    @Column(name = "identity")
+    private String identity;
+
 }

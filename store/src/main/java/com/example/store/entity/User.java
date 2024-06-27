@@ -58,8 +58,6 @@ public class User {
     @Column(name = "avatar")
     private String urlAvatar;
 
-
-
     @Column(name = "birthday")
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDate birthDate;
@@ -68,6 +66,8 @@ public class User {
     @JoinTable(name = "role_user", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
+
+    private String identity;
 
 //
 //    @OneToOne(cascade = CascadeType.ALL)
@@ -82,9 +82,9 @@ public class User {
     @JoinColumn(name = "cart", referencedColumnName = "id")
     private Cart cart;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    @JoinColumn(name = "forgot_password", referencedColumnName = "id")
-    private ForgotPassword forgotPassword;
+//    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+//    @JoinColumn(name = "forgot_password", referencedColumnName = "id")
+//    private ForgotPassword forgotPassword;
 
     @OneToMany(mappedBy = "userCreated", cascade = CascadeType.ALL)
     private List<Product> createdProducts;

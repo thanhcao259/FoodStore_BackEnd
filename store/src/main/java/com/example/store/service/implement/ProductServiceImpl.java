@@ -45,9 +45,10 @@ public class ProductServiceImpl implements IProductService {
     @Override
     public ProductResponseDTO getProductById(Long id) {
         Optional<Product> existedProduct = productRepository.findById(id);
-        if(existedProduct.isEmpty()){
+        if (existedProduct.isEmpty()) {
             throw new ProductNotFoundException("Not found product with id: " + id);
-        } ProductResponseDTO dto = productMapper.toResponseDTO(existedProduct.get());
+        }
+        ProductResponseDTO dto = productMapper.toResponseDTO(existedProduct.get());
         return dto;
     }
 
@@ -64,15 +65,15 @@ public class ProductServiceImpl implements IProductService {
     public ListProductPageDTO getProductPage(int pageNo, int pageSize, String sortBy, String sortDir, Long cateId) {
         Pageable pageable = PaginationAndSortingUtils.getPageable(pageNo, pageSize, sortBy, sortDir);
         // Not found cate, show all of product
-        if(cateId == null){
+        if (cateId == null) {
             List<Product> products = productRepository.findAll();
-            int pageSizes = (int) Math.ceil((double) products.size() /pageSize);
+            int pageSizes = (int) Math.ceil((double) products.size() / pageSize);
             Page<Product> productsPageable = productRepository.findAll(pageable);
             List<Product> productsContent = productsPageable.getContent();
             return new ListProductPageDTO(productMapper.toResponseDTOs(productsContent), pageSizes);
         }
         List<Product> productByCate = productRepository.findByCategoryId(cateId);
-        int pageSizes = (int) Math.ceil((double) productByCate.size() /pageSize);
+        int pageSizes = (int) Math.ceil((double) productByCate.size() / pageSize);
         Page<Product> productPage = productRepository.findByCategoryId(cateId, pageable);
         List<Product> productsContent = productPage.getContent();
         return new ListProductPageDTO(productMapper.toResponseDTOs(productsContent), pageSizes);
@@ -82,13 +83,15 @@ public class ProductServiceImpl implements IProductService {
     @Override
     public ProductResponseDTO createProduct(String username, ProductRequestDTO productRequestDTO) {
         Optional<User> existedUser = userRepository.findByUsername(username);
-        if(existedUser.isEmpty()){
+        if (existedUser.isEmpty()) {
             throw new UserNotFoundException("Not found user with name: " + username);
-        } User user = existedUser.get();
+        }
+        User user = existedUser.get();
         Optional<Category> existedCate = categoryRepository.findById(productRequestDTO.getCategory_id());
-        if(existedCate.isEmpty()){
+        if (existedCate.isEmpty()) {
             throw new CategoryNotFoundException("Not found category with id: " + productRequestDTO.getId());
-        } Category category = existedCate.get();
+        }
+        Category category = existedCate.get();
         Product product = productMapper.toEntity(productRequestDTO);
         category.getProducts().add(product);
         product.setCategory(category);
@@ -103,29 +106,36 @@ public class ProductServiceImpl implements IProductService {
     @Transactional
     @Override
     public ProductResponseDTO updateProductById(String username, Long id, ProductRequestDTO productRequestDTO) {
-        Optional<User> existedUser = userRepository.findByUsername(username);
-        if(existedUser.isEmpty()){
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        if (optionalUser.isEmpty()) {
             throw new UserNotFoundException("Not found user with name: " + username);
-        } User user = existedUser.get();
+        }
+        User user = optionalUser.get();
         Optional<Product> optionalProduct = productRepository.findById(id);
-        if(optionalProduct.isEmpty()){
+        if (optionalProduct.isEmpty()) {
             throw new ProductNotFoundException("Not found product with id: " + id);
-        } Product product = optionalProduct.get();
-        Optional<Category> existedCate = categoryRepository.findById(productRequestDTO.getCategory_id());
-        if(existedCate.isEmpty()){
+        }
+        Product product = optionalProduct.get();
+        Optional<Category> optionalCate = categoryRepository.findById(productRequestDTO.getCategory_id());
+        if (optionalCate.isEmpty()) {
             throw new CategoryNotFoundException("Not found category with id: " + productRequestDTO.getCategory_id());
-        } Category category = existedCate.get();
+        }
+        Category category = optionalCate.get();
+        String cateIdentity = category.getIdentity();
+        String productIdentity = generateIdentity(cateIdentity);
+
         product.setName(productRequestDTO.getName());
         product.setAvailable(productRequestDTO.getAvailable());
         product.setDescription(productRequestDTO.getDescription());
         product.setPrice(productRequestDTO.getPrice());
         product.setDiscount(productRequestDTO.getDiscount());
-        if(productRequestDTO.getUrlImage().isEmpty()){
+        if (productRequestDTO.getUrlImage().isEmpty()) {
             product.setUrlImage(productRequestDTO.getUrlImage());
         }
         product.setUserUpdated(user);
         product.setUpdatedDate(ZonedDateTime.now());
         product.setCategory(category);
+        product.setIdentity(productIdentity);
 
         Product savedProduct = productRepository.save(product);
         return productMapper.toResponseDTO(savedProduct);
@@ -135,9 +145,10 @@ public class ProductServiceImpl implements IProductService {
     @Override
     public Boolean deleteProductById(Long id) {
         Optional<Product> existedProduct = productRepository.findById(id);
-        if(existedProduct.isEmpty()){
+        if (existedProduct.isEmpty()) {
             throw new ProductNotFoundException("Not found product with id: " + id);
-        } Product product = existedProduct.get();
+        }
+        Product product = existedProduct.get();
         productRepository.delete(product);
         return true;
     }
@@ -146,7 +157,7 @@ public class ProductServiceImpl implements IProductService {
     @Override
     public List<ProductResponseDTO> getProductsByCategory(Long cateId) {
         Optional<Category> existedCate = categoryRepository.findById(cateId);
-        if(existedCate.isEmpty()){
+        if (existedCate.isEmpty()) {
             throw new CategoryNotFoundException("Not found category with id: " + cateId);
         }
         Category category = existedCate.get();
@@ -160,9 +171,17 @@ public class ProductServiceImpl implements IProductService {
     @Override
     public List<ProductResponseDTO> searchProduct(String keyword) {
         List<Product> existedProduct = productRepository.findByNameContainingIgnoreCase(keyword);
-        if(existedProduct.isEmpty()){
+        if (existedProduct.isEmpty()) {
             throw new ProductNotFoundException("Not found product with name: " + keyword);
-        } List<ProductResponseDTO> dtoList = productMapper.toResponseDTOs(existedProduct);
+        }
+        List<ProductResponseDTO> dtoList = productMapper.toResponseDTOs(existedProduct);
         return dtoList;
+    }
+
+    private String generateIdentity(String myString) {
+        // Generating random doubles
+        String strRand = myString+"_"+String.valueOf(Math.round(Math.random() * 10000)); // "myString_1234"
+
+        return strRand.toUpperCase();
     }
 }

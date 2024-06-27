@@ -77,7 +77,7 @@ public class JwtSecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/api/login").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/registration").permitAll()
                                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                                .requestMatchers("/api/user/**", "/api/payment").hasRole("USER")
+                                .requestMatchers("/api/user/**", "/api/payment").hasRole("CUSTOMER")
                                 .requestMatchers("/api/userOAuth").hasRole("USER")
                                 .requestMatchers("/api/cart/**", "/api/identification/**", "/api/change-password/**").authenticated()
                                 .anyRequest().permitAll()

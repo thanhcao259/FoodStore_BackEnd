@@ -1,10 +1,8 @@
 package com.example.store.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class CategoryDTO {
@@ -12,6 +10,7 @@ public class CategoryDTO {
     private String name;
     private String description;
     private String urlImage;
+    private String identity;
 
     public CategoryDTO(String name, String description, String urlImage) {
         this.name = name;
@@ -19,35 +18,10 @@ public class CategoryDTO {
         this.urlImage = urlImage;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
+    public CategoryDTO(String name, String description, String urlImage, String identity) {
         this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getUrlImage() {
-        return urlImage;
-    }
-
-    public void setUrlImage(String urlImage) {
         this.urlImage = urlImage;
+        this.identity = identity;
     }
 }

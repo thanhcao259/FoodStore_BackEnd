@@ -68,7 +68,7 @@ public class CategoryController {
 
     @PostMapping(path = "/admin/category", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createCategory(Authentication auth,
-                                            @RequestParam("image") MultipartFile multipartFile,
+                                            @RequestParam(value = "image", required = true) MultipartFile multipartFile,
                                             @RequestParam("name") String name,
                                             @RequestParam("description") String description
     ) throws IOException {
@@ -90,13 +90,16 @@ public class CategoryController {
     @PutMapping(path = "/admin/category/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateCategory(Authentication auth,
                                             @PathVariable("id") Long cateId,
-                                            @RequestParam("image") MultipartFile multipartFile,
+                                            @RequestParam(value = "image", required = false) MultipartFile multipartFile,
                                             @RequestParam("name") String name,
-                                            @RequestParam("description") String description) throws IOException {
+                                            @RequestParam(value = "description") String description) throws IOException {
         String username = auth.getName();
+        CategoryDTO dto = categoryService.getCategoryById(cateId);
         String imgUrl = "";
         if (multipartFile != null) {
             imgUrl = uploadFileService.uploadFile(multipartFile);
+        } else {
+            imgUrl = dto.getUrlImage();
         }
         CategoryDTO categoryDTO = new CategoryDTO(name, description, imgUrl);
         try {
