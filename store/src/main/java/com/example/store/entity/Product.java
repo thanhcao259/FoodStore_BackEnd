@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -67,5 +68,8 @@ public class Product {
     private List<Reviews> reviews;
 
     private String identity;
+
+    @ColumnDefault("true")
+    private boolean status;
 
 }

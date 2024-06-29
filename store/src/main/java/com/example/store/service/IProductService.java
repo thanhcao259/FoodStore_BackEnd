@@ -9,6 +9,7 @@ import java.util.List;
 public interface IProductService {
     ProductResponseDTO getProductById(Long id);
     List<ProductResponseDTO> getAllProducts();
+    List<ProductResponseDTO> getAllByAdmin();
     ListProductPageDTO getProductPage(int page, int pageSize, String sortBy, String sortDir, Long cateId);
     ProductResponseDTO createProduct(String username, ProductRequestDTO productRequestDTO);
     ProductResponseDTO updateProductById(String username, Long id, ProductRequestDTO productRequestDTO);

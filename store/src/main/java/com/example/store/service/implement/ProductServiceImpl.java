@@ -55,6 +55,13 @@ public class ProductServiceImpl implements IProductService {
     @Transactional
     @Override
     public List<ProductResponseDTO> getAllProducts() {
+        List<Product> products = productRepository.findAllByStatus(true);
+        List<ProductResponseDTO> dtoList = productMapper.toResponseDTOs(products);
+        return dtoList;
+    }
+
+    @Override
+    public List<ProductResponseDTO> getAllByAdmin() {
         List<Product> products = productRepository.findAll();
         List<ProductResponseDTO> dtoList = productMapper.toResponseDTOs(products);
         return dtoList;

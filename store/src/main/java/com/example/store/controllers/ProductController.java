@@ -49,6 +49,15 @@ public class ProductController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @GetMapping("/admin/products/get-all")
+    public ResponseEntity<?> getAllByAdmin() {
+        try {
+            List<ProductResponseDTO> products = productService.getAllByAdmin();
+            return new ResponseEntity<>(products, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @GetMapping("/products")
     public ResponseEntity<?> getProductPage(@RequestParam(value = "pageNo", defaultValue = "0") int pageNo,
@@ -92,7 +101,7 @@ public class ProductController {
     @PostMapping(path = "/admin/products", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> addProduct(Authentication auth,
                                         @RequestParam("name") String name, @RequestParam("category_id") Long cateId,
-                                        @RequestParam("available") int available, @RequestParam("discount") double discount,
+                                        @RequestParam("available") int available, @RequestParam(value = "discount", defaultValue = "0") double discount,
                                         @RequestParam("price") double price, @RequestParam("description") String description,
                                         @RequestParam("image") MultipartFile multipartFile) throws IOException {
         try {
