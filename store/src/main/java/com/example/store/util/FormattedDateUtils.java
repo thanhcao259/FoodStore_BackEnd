@@ -12,4 +12,10 @@ public class FormattedDateUtils {
         String result = date.format(fmt);
         return result;
     }
+
+    public String convertToString1(ZonedDateTime date) {
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyyMMddHH");
+        String result = date.format(fmt);
+        return result;
+    }
 }
