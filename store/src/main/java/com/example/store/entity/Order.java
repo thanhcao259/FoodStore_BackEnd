@@ -50,4 +50,6 @@ public class Order {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
+    private String identity;
+
 }

@@ -187,4 +187,20 @@ public class OrderController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PutMapping("/admin/updateOrder/{id}")
+    public ResponseEntity<?> updateOrder(Authentication auth, @PathVariable("id") Long orderId, OrderRequestDTO requestDTO){
+        try{
+            String username = auth.getName();
+            OrderResponseDTO responseDTO = orderService.updateInfoOrder(orderId, username);
+            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+
+        } catch (AuthenticationException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (AccessDeniedException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

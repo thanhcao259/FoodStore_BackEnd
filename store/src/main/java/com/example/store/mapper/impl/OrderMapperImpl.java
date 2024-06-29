@@ -35,6 +35,7 @@ public class OrderMapperImpl implements IOrderMapper {
         orderResponseDTO.setTotalPrice(order.getTotalPrice());
         orderResponseDTO.setDeliveryTime(order.getDeliveryTime());
         orderResponseDTO.setStatusOrder(order.getStatusOrder().getName());
+        orderResponseDTO.setIdentity(order.getIdentity());
 
         List<CartItemResponseDTO> cartItemResponseDTOs = cartItemMapper.toResponseDTOs(order.getCartItem());
         for(CartItem item : order.getCartItem()) {

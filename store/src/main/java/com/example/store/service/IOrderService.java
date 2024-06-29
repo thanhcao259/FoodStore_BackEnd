@@ -20,4 +20,6 @@ public interface IOrderService {
     boolean cancelOrder(Long idOrder, String username);
     boolean receivedProduct (Long idOrder, String username);
 
+    OrderResponseDTO updateInfoOrder(Long orderId, String username);
+
 }

@@ -18,5 +18,7 @@ public interface IOrderRepository extends JpaRepository<Order, Long> {
 
     @Query("select ci from Order o join CartItem ci on o.id = ci.order.id join Product p on p.id = ci.product.id where o.id = ?1")
     List<CartItem> findCartItemsByOrderAndUsername (Long orderId);
+    @Query("select o from Order o where o.id = ?1")
+    Optional<Order> findByIdAndUsername(Long id, String username);
 
 }

@@ -18,10 +18,8 @@ public class OrderResponseDTO {
     private String statusOrder;
     private VnPayResponseDTO vnPayResponseDTO;
     private List<CartItemResponseDTO> cartItemResponseDTOs;
+    private String identity;
 
-    public List<CartItemResponseDTO> getCartItemResponseDTOs() {
-        return cartItemResponseDTOs;
-    }
 
     public void setCartItemResponseDTOs(List<CartItemResponseDTO> cartItemResponseDTOs) {
         this.cartItemResponseDTOs = cartItemResponseDTOs;

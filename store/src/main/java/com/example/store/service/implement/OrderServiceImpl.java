@@ -11,9 +11,11 @@ import com.example.store.mapper.VnPayMapper;
 import com.example.store.mapper.impl.CartItemMapperImpl;
 import com.example.store.repository.*;
 import com.example.store.service.IOrderService;
+import com.example.store.util.FormattedDateUtils;
 import com.example.store.util.PaginationAndSortingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -36,6 +38,8 @@ public class OrderServiceImpl implements IOrderService {
     private final IStatusOrderRepository statusOrderRepository;
     private final VnPayMapper vnPayMapper;
     private final IProductRepository productRepository;
+    @Autowired
+    private FormattedDateUtils fmtDateUtils;
 
     public OrderServiceImpl(IAddressRepository addressRepository, IOrderRepository orderRepository, ICartItemRepository cartItemRepository, IOrderMapper orderMapper, IUserRepository userRepository, IStatusOrderRepository statusOrderRepository, VnPayMapper vnPayMapper, IProductRepository productRepository, CartItemMapperImpl cartItemMapperImpl) {
         this.addressRepository = addressRepository;
@@ -69,7 +73,9 @@ public class OrderServiceImpl implements IOrderService {
         Address address = optionalAddress.get();
         // Setup for new order
         Order order = new Order();
+        String identity = generateIdentity(order.getDeliveryTime(),username);
         order.setAddress(address);
+        order.setIdentity(identity);
         order.setName(orderRequestDTO.getName());
         order.setPhone(orderRequestDTO.getPhone());
         order.setDeliveryTime(ZonedDateTime.now());
@@ -109,6 +115,7 @@ public class OrderServiceImpl implements IOrderService {
     @Transactional
     @Override
     public OrderResponseDTO orderPayment(String username, OrderPaymentDTO orderPaymentDTO) {
+        /// Find user, received address and get one's cart
         Optional<User> optionalUser = userRepository.findByUsername(username);
         if (optionalUser.isEmpty()) {
             throw new UserNotFoundException("Not found " + username);
@@ -124,14 +131,18 @@ public class OrderServiceImpl implements IOrderService {
             throw new AddressNotFoundException("Not found address ");
         }
         Address address = optionalAddress.get();
-        // Setup for new order
+        ////
+
+        /// Create new order
         Order order = new Order();
+        String identity = generateIdentity(order.getDeliveryTime(), username);
         order.setAddress(address);
         order.setName(orderPaymentDTO.getName());
         order.setUser(user);
         order.setPhone(orderPaymentDTO.getPhone());
         order.setDeliveryTime(ZonedDateTime.now());
         order.setCartItem(cartItems);
+        order.setIdentity(identity);
 
         // Total Price
         double totalPrices = 0.0;
@@ -299,5 +310,47 @@ public class OrderServiceImpl implements IOrderService {
             return true;
         }
         throw new StatusOrderOnChangeException("Can't change order. Current status is " + currStatus);
+    }
+
+    @Override
+    public OrderResponseDTO updateInfoOrder(Long orderId, String username) {
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        if(optionalUser.isEmpty()){
+            throw new OrderNotFoundException("Not found user");
+        } User user = optionalUser.get();
+        Optional<Order> optionalOrder = orderRepository.findByIdAndUsername(orderId, username);
+        if(optionalOrder.isEmpty()){
+            throw new OrderNotFoundException("Not found order");
+        } Order order = optionalOrder.get();
+        String identity = generateIdentity(order.getDeliveryTime(), username);
+        logger.info("update dentity {}", identity);
+        order.setIdentity(identity);
+//        order.setPhone(requestDTO.getPhone());
+
+        orderRepository.save(order);
+        OrderResponseDTO responseDTO = orderMapper.toResponseDTO(order);
+        return responseDTO;
+    }
+
+    private String generateIdentity(ZonedDateTime date, String user){
+        String strDate = fmtDateUtils.convertToString1(date);
+        String strRand = generateRand();
+        user = user.replaceAll(" ", "").toUpperCase();
+        String rs = strDate+"_"+user+"_"+strRand;
+        logger.info("generate order identity: {}, {}, {}", strDate, user, strRand);
+        return rs;
+    }
+
+    private String generateRand(){
+        int number = 9;
+        String regex = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                + "0123456789"
+                + "abcdefghijklmnopqrstuvxyz";
+
+        StringBuilder builder = new StringBuilder(number);
+        for (int i=0;i<number;i++){
+            int c = (int) (regex.length() * Math.random());
+            builder.append(regex.charAt(c));
+        } return builder.toString();
     }
 }
