@@ -170,4 +170,21 @@ public class ProductController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PutMapping("/admin/product-change-status/{id}")
+    public ResponseEntity<?> activateProduct(Authentication auth, @PathVariable("id")Long id){
+        try{
+            String username = auth.getName();
+            return new ResponseEntity<>(productService.updateStatus(username, id), HttpStatus.OK);
+        } catch (AuthenticationException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (AccessDeniedException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+        } catch (ProductNotFoundException e) {
+            return new ResponseEntity<>("Not found product by id: " + id, HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

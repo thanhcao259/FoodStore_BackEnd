@@ -16,4 +16,6 @@ public interface IProductService {
     Boolean deleteProductById(Long id);
     List<ProductResponseDTO> getProductsByCategory(Long cateId);
     List<ProductResponseDTO> searchProduct(String keyword);
+
+    boolean updateStatus(String username, Long proId);
 }

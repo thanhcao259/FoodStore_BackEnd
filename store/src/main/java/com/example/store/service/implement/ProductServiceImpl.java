@@ -185,6 +185,23 @@ public class ProductServiceImpl implements IProductService {
         return dtoList;
     }
 
+    @Override
+    public boolean updateStatus(String username, Long proId) {
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        if(optionalUser.isEmpty()){
+            throw new UserNotFoundException("Not found username");
+        } Optional<Product> optionalProduct = productRepository.findById(proId);
+        if (optionalProduct.isEmpty()){
+            throw new ProductNotFoundException("Not found product");
+        } Product product = optionalProduct.get();
+        if(product.isStatus()){
+            product.setStatus(false);
+        } else {
+            product.setStatus(true);
+        } productRepository.save(product);
+        return true;
+    }
+
     private String generateIdentity(String myString) {
         // Generating random doubles
         String strRand = myString+"_"+String.valueOf(Math.round(Math.random() * 10000)); // "myString_1234"
