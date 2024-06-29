@@ -71,6 +71,18 @@ public class ProductController {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @GetMapping("/products/searching")
+    public ResponseEntity<?> getSearchPage(@RequestParam(value = "pageNo", defaultValue = "0") int pageNo,
+                                            @RequestParam(value = "pageSize", defaultValue = "9") int pageSize,
+                                            @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
+                                            @RequestParam(value = "sortDir", defaultValue = "asc") String sorDir,
+                                            @RequestParam(value = "keyword", defaultValue = "") String keyword) {
+        try {
+            return new ResponseEntity<>(productService.getSearchProductPage(pageNo, pageSize, sortBy, sorDir, keyword), HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @GetMapping("/products/{id}")
     public ResponseEntity<?> getProductById(@PathVariable("id") Long proId) {

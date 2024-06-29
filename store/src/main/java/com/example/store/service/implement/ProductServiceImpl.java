@@ -73,17 +73,28 @@ public class ProductServiceImpl implements IProductService {
         Pageable pageable = PaginationAndSortingUtils.getPageable(pageNo, pageSize, sortBy, sortDir);
         // Not found cate, show all of product
         if (cateId == null) {
-            List<Product> products = productRepository.findAll();
+            List<Product> products = productRepository.findAllByStatus(true);
             int pageSizes = (int) Math.ceil((double) products.size() / pageSize);
             Page<Product> productsPageable = productRepository.findAll(pageable);
             List<Product> productsContent = productsPageable.getContent();
             return new ListProductPageDTO(productMapper.toResponseDTOs(productsContent), pageSizes);
         }
-        List<Product> productByCate = productRepository.findByCategoryId(cateId);
+        List<Product> productByCate = productRepository.findByCategoryIdAndStatus(cateId, true);
         int pageSizes = (int) Math.ceil((double) productByCate.size() / pageSize);
         Page<Product> productPage = productRepository.findByCategoryId(cateId, pageable);
         List<Product> productsContent = productPage.getContent();
         return new ListProductPageDTO(productMapper.toResponseDTOs(productsContent), pageSizes);
+    }
+
+    @Override
+    public ListProductPageDTO getSearchProductPage(int page, int pageSize, String sortBy, String sortDir, String keyword) {
+        Pageable pageable = PaginationAndSortingUtils.getPageable(page, pageSize, sortBy, sortDir);
+
+        List<Product> products = productRepository.findByNameAndStatus(keyword, true);
+        int pageSizes = (int) (Math.ceil((double) products.size()/pageSize));
+        Page<Product> productPage = productRepository.findByNameAndStatusTrue(keyword, pageable);
+        List<Product> content = productPage.getContent();
+        return new ListProductPageDTO(productMapper.toResponseDTOs(content), pageSizes);
     }
 
     @Transactional

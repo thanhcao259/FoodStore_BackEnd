@@ -11,12 +11,18 @@ import java.util.List;
 
 @Repository
 public interface IProductRepository extends JpaRepository<Product, Long> {
+
     List<Product> findByNameContainingIgnoreCase(String nameProduct);
     List<Product> findByPriceBetween(double minPrice, double maxPrice);
-    Page<Product> findByCategoryId(Long idCategory, Pageable pageable);
-    List<Product> findByCategoryId(Long idCategory);
+    @Query("select p from Product p where p.category.id = ?1 and p.status = ?2")
+    List<Product> findByCategoryIdAndStatus(Long idCategory, boolean status);
+    Page<Product> findByCategoryId(Long cateId, Pageable pageable);
 
 
     @Query("select p from Product p where p.status = ?1")
     List<Product> findAllByStatus(boolean status);
+
+    @Query("select p from Product p where p.name like %:keyword% and p.status = :status")
+    List<Product> findByNameAndStatus(String keyword, boolean status);
+    Page<Product> findByNameAndStatusTrue(String keyword, Pageable pageable);
 }
