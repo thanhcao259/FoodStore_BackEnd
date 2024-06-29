@@ -14,21 +14,22 @@ import com.example.store.repository.ICategoryRepository;
 import com.example.store.repository.IProductRepository;
 import com.example.store.repository.IUserRepository;
 import com.example.store.service.IProductService;
-import com.example.store.service.IUserService;
 import com.example.store.util.PaginationAndSortingUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class ProductServiceImpl implements IProductService {
 
+    private Logger log = LoggerFactory.getLogger(ProductServiceImpl.class);
     private final IProductRepository productRepository;
     private final IUserRepository userRepository;
     private final IProductMapper productMapper;
@@ -91,8 +92,10 @@ public class ProductServiceImpl implements IProductService {
         Pageable pageable = PaginationAndSortingUtils.getPageable(page, pageSize, sortBy, sortDir);
 
         List<Product> products = productRepository.findByNameAndStatus(keyword, true);
+        log.info("products {}",products);
         int pageSizes = (int) (Math.ceil((double) products.size()/pageSize));
-        Page<Product> productPage = productRepository.findByNameAndStatusTrue(keyword, pageable);
+        Page<Product> productPage = productRepository.findByNameAndStatus(keyword, true, pageable);
+        log.info("Prod page: {}",productPage.getContent());
         List<Product> content = productPage.getContent();
         return new ListProductPageDTO(productMapper.toResponseDTOs(content), pageSizes);
     }
