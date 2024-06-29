@@ -31,6 +31,7 @@ public class ProductMapperImpl implements IProductMapper {
         product.setUrlImage(productRequestDTO.getUrlImage());
         product.setDiscount(productRequestDTO.getDiscount());
         product.setAvailable(productRequestDTO.getAvailable());
+        product.setStatus(productRequestDTO.isStatus());
         return product;
     }
 
@@ -45,11 +46,8 @@ public class ProductMapperImpl implements IProductMapper {
         productResponseDTO.setAvailable(product.getAvailable());
         productResponseDTO.setId(product.getId());
         productResponseDTO.setCategory_id(product.getCategory().getId());
-        productResponseDTO.setCreatedDate(product.getCreatedDate());
-        productResponseDTO.setUpdatedDate(product.getUpdatedDate());
-        productResponseDTO.setUserCreated(userMapper.toDTO(product.getUserCreated()));
-        productResponseDTO.setUserUpdated(userMapper.toDTO(product.getUserUpdated()));
         productResponseDTO.setIdentity(product.getIdentity());
+        productResponseDTO.setStatus(product.isStatus());
 
         // calculate avg rate of each product
         double countRate = 0;

@@ -19,12 +19,9 @@ public class ProductResponseDTO {
     private List<ReviewResponseDTO> reviews;
     private String urlImage;
 
-    private UserDTO userCreated;
-    private UserDTO userUpdated;
-    private ZonedDateTime createdDate;
-    private ZonedDateTime updatedDate;
     private String description;
     @Value("0")
     private Double rate;
     private String identity;
+    private boolean status;
 }

@@ -111,7 +111,7 @@ public class ProductController {
             if (multipartFile != null) {
                 imgUrl = uploadFileService.uploadFile(multipartFile);
             }
-            ProductRequestDTO newProduct = new ProductRequestDTO(name, cateId, available, discount, price, imgUrl, description);
+            ProductRequestDTO newProduct = new ProductRequestDTO(name, cateId, available, discount, price, imgUrl, description, true);
             return new ResponseEntity<>(productService.createProduct(username, newProduct), HttpStatus.OK);
         } catch (AuthenticationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);

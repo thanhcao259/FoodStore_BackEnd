@@ -15,7 +15,18 @@ public class ProductRequestDTO {
     private String urlImage;
     private String description;
     private String identity;
+    private boolean status;
 
+    public ProductRequestDTO(String name, Long category_id, int available, double discount, double price, String urlImage, String description, boolean status) {
+        this.name = name;
+        this.category_id = category_id;
+        this.available = available;
+        this.discount = discount;
+        this.price = price;
+        this.urlImage = urlImage;
+        this.description = description;
+        this.status = status;
+    }
     public ProductRequestDTO(String name, Long category_id, int available, double discount, double price, String urlImage, String description) {
         this.name = name;
         this.category_id = category_id;
@@ -25,5 +36,7 @@ public class ProductRequestDTO {
         this.urlImage = urlImage;
         this.description = description;
     }
+
+
 
 }
