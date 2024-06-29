@@ -65,6 +65,7 @@ public class CategoryServiceImpl implements ICategoryService {
         category.setCreatedDate(ZonedDateTime.now());
         category.setUpdatedDate(ZonedDateTime.now());
         category.setIdentity(identity);
+        category.setStatus(true);
         categoryRepository.save(category);
         return categoryDTO;
     }
@@ -97,19 +98,40 @@ public class CategoryServiceImpl implements ICategoryService {
 
     @Transactional
     @Override
-    public Boolean deleteCategoryById(Long id) {
-
-        Optional<Category> category = categoryRepository.findById(id);
-        if(category.isEmpty()) {
+    public Boolean deactiveStatus(Long id) {
+        Optional<Category> optionalCategory = categoryRepository.findByIdAndStatus(id, true);
+        if(optionalCategory.isEmpty()) {
             throw new CategoryNotFoundException("Not found cate: "+id);
-        } categoryRepository.deleteById(id);
+        } Category category = optionalCategory.get();
+        category.setStatus(false);
+        categoryRepository.save(category);
+//        categoryRepository.deleteById(id);
         return true;
     }
 
     @Transactional
     @Override
-    public List<CategoryDTO> getCategories() {
+    public Boolean activeStatus(Long id){
+        Optional<Category> optional = categoryRepository.findById(id);
+        if(optional.isEmpty()) {
+            throw new CategoryNotFoundException("Not found category");
+        } Category category = optional.get();
+        category.setStatus(true);
+        categoryRepository.save(category);
+        return true;
+    }
+
+    @Transactional
+    @Override
+    public List<CategoryDTO> getCateByAdmin() {
         List<Category> categories = categoryRepository.findAll();
+        List<CategoryDTO> categoriesDTOs = categoryMapper.toDTOs(categories);
+        return categoriesDTOs;
+    }
+
+    @Override
+    public List<CategoryDTO> getAllCate() {
+        List<Category> categories = categoryRepository.findAllByStatusIsTrue();
         List<CategoryDTO> categoriesDTOs = categoryMapper.toDTOs(categories);
         return categoriesDTOs;
     }

@@ -9,6 +9,8 @@ public interface ICategoryService {
     List<CategoryDTO> getCategoryPagingAndSort(int pageNo, int pageSize, String sortBy, String sortDir);
     CategoryDTO createCategory (CategoryDTO categoryDTO, String username);
     CategoryDTO updateCategoryById (String username, Long id, CategoryDTO categoryDTO);
-    Boolean deleteCategoryById(Long id);
-    List<CategoryDTO> getCategories();
+    Boolean deactiveStatus(Long id);
+    Boolean activeStatus(Long id);
+    List<CategoryDTO> getCateByAdmin();
+    List<CategoryDTO> getAllCate();
 }

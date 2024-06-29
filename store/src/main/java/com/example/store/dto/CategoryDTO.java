@@ -11,11 +11,13 @@ public class CategoryDTO {
     private String description;
     private String urlImage;
     private String identity;
+    private boolean status;
 
-    public CategoryDTO(String name, String description, String urlImage) {
+    public CategoryDTO(String name, String description, String urlImage, boolean status) {
         this.name = name;
         this.description = description;
         this.urlImage = urlImage;
+        this.status = status;
     }
 
     public CategoryDTO(String name, String description, String urlImage, String identity) {

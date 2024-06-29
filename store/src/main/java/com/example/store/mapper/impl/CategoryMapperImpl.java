@@ -21,6 +21,7 @@ public class CategoryMapperImpl implements ICategoryMapper {
         categoryDTO.setDescription(category.getDescription());
         categoryDTO.setUrlImage(category.getImage());
         categoryDTO.setIdentity(category.getIdentity());
+        categoryDTO.setStatus(category.isStatus());
         return categoryDTO;
     }
 
@@ -31,6 +32,7 @@ public class CategoryMapperImpl implements ICategoryMapper {
         category.setName(categoryDTO.getName());
         category.setDescription(categoryDTO.getDescription());
         category.setImage(categoryDTO.getUrlImage());
+        category.setStatus(categoryDTO.isStatus());
         return category;
     }
 

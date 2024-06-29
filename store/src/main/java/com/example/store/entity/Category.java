@@ -1,14 +1,13 @@
 package com.example.store.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.ZonedDateTime;
 import java.util.List;
 
-@Data
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -42,4 +41,11 @@ public class Category {
     @Column(name = "identity")
     private String identity;
 
+    @Column(name = "status")
+    @ColumnDefault(value = "true")
+    private boolean status;
+
+    public boolean isStatus() {
+        return status;
+    }
 }

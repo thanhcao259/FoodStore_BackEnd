@@ -59,7 +59,16 @@ public class CategoryController {
     @GetMapping("/categories")
     public ResponseEntity<?> getCategories() {
         try {
-            List<CategoryDTO> dtoList = categoryService.getCategories();
+            List<CategoryDTO> dtoList = categoryService.getAllCate();
+            return new ResponseEntity<>(dtoList, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @GetMapping("/admin/categories")
+    public ResponseEntity<?> getCategoriesByAdmin() {
+        try {
+            List<CategoryDTO> dtoList = categoryService.getCateByAdmin();
             return new ResponseEntity<>(dtoList, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -75,7 +84,7 @@ public class CategoryController {
         try {
             String username = auth.getName();
             String imgUrl = uploadFileService.uploadFile(multipartFile);
-            CategoryDTO categoryDTO = new CategoryDTO(name, description, imgUrl);
+            CategoryDTO categoryDTO = new CategoryDTO(name, description, imgUrl, true);
 
             return new ResponseEntity<>(categoryService.createCategory(categoryDTO, username), HttpStatus.OK);
         } catch (AuthenticationException e) {
@@ -101,7 +110,7 @@ public class CategoryController {
         } else {
             imgUrl = dto.getUrlImage();
         }
-        CategoryDTO categoryDTO = new CategoryDTO(name, description, imgUrl);
+        CategoryDTO categoryDTO = new CategoryDTO(name, description, imgUrl, true);
         try {
             return new ResponseEntity<>(categoryService.updateCategoryById(username, cateId, categoryDTO), HttpStatus.OK);
         } catch (AuthenticationException e) {
@@ -118,10 +127,40 @@ public class CategoryController {
     @DeleteMapping("/admin/category/{id}")
     public ResponseEntity<?> deleteCategory(@PathVariable(value = "id") Long cateId) {
         try {
-            return new ResponseEntity<>(categoryService.deleteCategoryById(cateId), HttpStatus.OK);
+            return new ResponseEntity<>(categoryService.deactiveStatus(cateId), HttpStatus.OK);
         } catch (AuthenticationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
         } catch (ExpiredJwtException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (AccessDeniedException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+        } catch (CategoryNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/admin/category-activate/{id}")
+    public ResponseEntity<?> activateCategory(@PathVariable(value = "id") Long cateId) {
+        try {
+            return new ResponseEntity<>(categoryService.activeStatus(cateId), HttpStatus.OK);
+        } catch (AuthenticationException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (AccessDeniedException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+        } catch (CategoryNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/admin/category-deactivate/{id}")
+    public ResponseEntity<?> deactivateCategory(@PathVariable(value = "id") Long cateId) {
+        try {
+            return new ResponseEntity<>(categoryService.deactiveStatus(cateId), HttpStatus.OK);
+        } catch (AuthenticationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
         } catch (AccessDeniedException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
