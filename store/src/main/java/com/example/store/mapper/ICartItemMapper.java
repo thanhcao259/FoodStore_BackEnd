@@ -6,6 +6,6 @@ import com.example.store.entity.CartItem;
 import java.util.List;
 
 public interface ICartItemMapper {
-    CartItemResponseDTO toResponseDTOs(CartItem cartItem);
+    CartItemResponseDTO toResponseDTO(CartItem cartItem);
     List<CartItemResponseDTO> toResponseDTOs(List<CartItem> cartItems);
 }

@@ -39,7 +39,7 @@ public class OrderMapperImpl implements IOrderMapper {
 
         List<CartItemResponseDTO> cartItemResponseDTOs = cartItemMapper.toResponseDTOs(order.getCartItem());
         for(CartItem item : order.getCartItem()) {
-            cartItemResponseDTOs.add(cartItemMapper.toResponseDTOs(item));
+            cartItemResponseDTOs.add(cartItemMapper.toResponseDTO(item));
         } orderResponseDTO.setCartItemResponseDTOs(cartItemResponseDTOs);
 
         if(order.getVnPayInfo()!= null){

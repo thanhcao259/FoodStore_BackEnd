@@ -60,16 +60,16 @@ public class CartServiceImpl implements ICartService {
             cartItemNew.setAddedDate(ZonedDateTime.now());
             cartItemNew.setTotalPrice( quantity * amount);
             CartItem cartItemSaved = cartItemRepository.save(cartItemNew);
-            System.out.println("CartItem saved: " + cartItemSaved);
-            return cartItemMapper.toResponseDTOs(cartItemSaved);
+//            System.out.println("CartItem saved: " + cartItemSaved);
+            return cartItemMapper.toResponseDTO(cartItemSaved);
         } // else
         CartItem cartItemUpdated = cartItem.get();
         int newQuantity = quantity + cartItemUpdated.getQuantity();
         cartItemUpdated.setQuantity(newQuantity);
         cartItemUpdated.setTotalPrice(newQuantity * amount );
         CartItem cartItemSaved = cartItemRepository.save(cartItemUpdated);
-        System.out.println("CartItem saved: " + cartItemSaved);
-        return cartItemMapper.toResponseDTOs(cartItemSaved);
+//        System.out.println("CartItem saved: " + cartItemSaved);
+        return cartItemMapper.toResponseDTO(cartItemSaved);
     }
 
     @Transactional
@@ -106,8 +106,8 @@ public class CartServiceImpl implements ICartService {
         existedCartItem.setQuantity(quantity);
         existedCartItem.setTotalPrice(quantity * amount );
         CartItem cartItemSaved = cartItemRepository.save(existedCartItem);
-        System.out.println("CartItem saved: " + cartItemSaved);
-        return cartItemMapper.toResponseDTOs(cartItemSaved);
+//        System.out.println("CartItem saved: " + cartItemSaved);
+        return cartItemMapper.toResponseDTO(cartItemSaved);
     }
 
     @Transactional

@@ -11,7 +11,7 @@ import java.util.List;
 @Component
 public class CartItemMapperImpl implements ICartItemMapper {
     @Override
-    public CartItemResponseDTO toResponseDTOs(CartItem cartItem) {
+    public CartItemResponseDTO toResponseDTO(CartItem cartItem) {
         CartItemResponseDTO responseDTO = new CartItemResponseDTO();
         responseDTO.setCartId(cartItem.getCart().getId());
         responseDTO.setProductId(cartItem.getProduct().getId());
@@ -23,6 +23,8 @@ public class CartItemMapperImpl implements ICartItemMapper {
         responseDTO.setTotalPrice(cartItem.getTotalPrice());
         responseDTO.setDeleted(cartItem.isDeleted());
         responseDTO.setName(cartItem.getProduct().getName());
+        responseDTO.setProductIdentity(cartItem.getProduct().getIdentity());
+        responseDTO.setCategory(cartItem.getProduct().getCategory().getName());
         return responseDTO;
     }
 
@@ -30,7 +32,7 @@ public class CartItemMapperImpl implements ICartItemMapper {
     public List<CartItemResponseDTO> toResponseDTOs(List<CartItem> cartItemList) {
         List<CartItemResponseDTO> cartItemResponseDTOs = new ArrayList<>();
         for (CartItem cartItem : cartItemList) {
-            cartItemResponseDTOs.add(toResponseDTOs(cartItem));
+            cartItemResponseDTOs.add(toResponseDTO(cartItem));
         }
         return cartItemResponseDTOs;
     }

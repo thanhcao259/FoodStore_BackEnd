@@ -1,7 +1,6 @@
 package com.example.store.service;
 
 import com.example.store.dto.CartItemResponseDTO;
-import com.example.store.dto.CartItemsDTO;
 
 import java.util.List;
 

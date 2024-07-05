@@ -18,4 +18,6 @@ public class CartItemResponseDTO {
     private double price;
     private double discount;
     private String urlImage;
+    private String productIdentity;
+    private String category;
 }
