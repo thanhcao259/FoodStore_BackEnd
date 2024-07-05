@@ -133,15 +133,18 @@ public class VnPayController {
             if ("00".equals(vnp_ResponseCode)) {
                 orderService.orderPayment(username, orderPaymentDTO);
 //                log.info("Redirecting to success page");
-                response.sendRedirect("https://food-store-front-end.vercel.app/payment/success");
+//                response.sendRedirect("https://food-store-front-end.vercel.app/payment/success");
+                response.sendRedirect("http://localhost:3000/payment/success");
             } else {
 //                log.info("Payment failed, redirecting to failed page");
                 response.sendRedirect("https://food-store-front-end.vercel.app/payment/failed");
+                response.sendRedirect("http://localhost:3000/payment/failed");
             }
         } catch (Exception e) {
             log.error("Exception during payment callback processing", e);
             e.printStackTrace();
-            response.sendRedirect("https://food-store-front-end.vercel.app/payment/failed");
+//            response.sendRedirect("https://food-store-front-end.vercel.app/payment/failed");
+            response.sendRedirect("http://localhost:3000/payment/failed");
         }
     }
 
