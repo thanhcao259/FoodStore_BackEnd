@@ -73,7 +73,7 @@ public class OrderServiceImpl implements IOrderService {
         Address address = optionalAddress.get();
         // Setup for new order
         Order order = new Order();
-        String identity = generateIdentity(order.getDeliveryTime(),username);
+        String identity = generateIdentity(ZonedDateTime.now(),username);
         order.setAddress(address);
         order.setIdentity(identity);
         order.setName(orderRequestDTO.getName());
@@ -135,7 +135,7 @@ public class OrderServiceImpl implements IOrderService {
 
         /// Create new order
         Order order = new Order();
-        String identity = generateIdentity(order.getDeliveryTime(), username);
+        String identity = generateIdentity(ZonedDateTime.now(), username);
         order.setAddress(address);
         order.setName(orderPaymentDTO.getName());
         order.setUser(user);
