@@ -145,7 +145,7 @@ public class ProductServiceImpl implements IProductService {
         }
         Category category = optionalCate.get();
         String cateIdentity = category.getIdentity();
-        String productIdentity = generateIdentity(cateIdentity);
+//        String productIdentity = generateIdentity(cateIdentity);
 
         product.setName(productRequestDTO.getName());
         product.setAvailable(productRequestDTO.getAvailable());
@@ -158,7 +158,7 @@ public class ProductServiceImpl implements IProductService {
         product.setUserUpdated(user);
         product.setUpdatedDate(ZonedDateTime.now());
         product.setCategory(category);
-        product.setIdentity(productIdentity);
+//        product.setIdentity(productIdentity);
 
         Product savedProduct = productRepository.save(product);
         return productMapper.toResponseDTO(savedProduct);
