@@ -9,4 +9,5 @@ public interface IAddressService {
     AddressDTO createAddress(String username, AddressDTO addressDTO);
     AddressDTO updateAddressById (String username, Long id, AddressDTO addressDTO);
     boolean deleteAddressById (String username,Long id);
+    String getAddressById(String username, Long id);
 }

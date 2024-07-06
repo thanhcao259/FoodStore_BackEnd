@@ -89,5 +89,19 @@ public class AddressServiceImpl implements IAddressService {
         return false;
     }
 
+    @Override
+    public String getAddressById(String username, Long id) {
+        Optional<User> user = userRepository.findByUsername(username);
+        if(user.isEmpty()){
+            throw new UserNotFoundException("Not Found "+username);
+        }
+        Long userId = user.get().getId();
+        Optional<Address> existedAddress = addressRepository.findByIdAndUserId(id, userId);
+        if(existedAddress.isEmpty()){
+            throw new AddressNotFoundException("Not Found "+existedAddress);
+        } String rs = existedAddress.get().getAddress();
+        return rs;
+    }
+
 
 }
