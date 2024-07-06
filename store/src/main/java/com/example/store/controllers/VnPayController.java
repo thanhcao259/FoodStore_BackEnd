@@ -1,12 +1,15 @@
 package com.example.store.controllers;
 
 import com.example.store.config.VnPayConfig;
-import com.example.store.dto.OrderPaymentDTO;
-import com.example.store.dto.OrderRequestDTO;
+import com.example.store.dto.*;
+import com.example.store.service.EmailService;
 import com.example.store.service.IOrderService;
+import com.example.store.service.IUserService;
+import com.example.store.util.CurrencyUtils;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,24 +28,43 @@ import java.util.*;
 public class VnPayController {
     private static final Logger log = LoggerFactory.getLogger(VnPayController.class);
     private final IOrderService orderService;
+    @Autowired
+    private EmailService emailService;
+    @Autowired
+    private IUserService userService;
+    @Autowired
+    private CurrencyUtils currencyUtils;
 
     public VnPayController(IOrderService orderService) {
         this.orderService = orderService;
     }
 
+    HashMap<String, Double> priceHm = new HashMap<>();
+    HashMap<String, String> infoCustomer = new HashMap<>();
+
     @GetMapping("/pay")
     public String payOrder(Authentication auth, @RequestParam("addressId") Long addressId,
                            @RequestParam("name") String name, @RequestParam("phone") String phone,
-                           @RequestParam("totalPrice") double totalPrice) throws UnsupportedEncodingException {
+                           @RequestParam("totalPrice") double totalAmount,
+                           @RequestParam("vat") double vat, @RequestParam("feeShip")double feeShip) throws UnsupportedEncodingException {
         OrderRequestDTO requestDTO = new OrderRequestDTO();
         requestDTO.setAddressId(addressId);
         requestDTO.setName(name);
         requestDTO.setPhone(phone);
         String username = auth.getName();
+        UserDTO userDTO = userService.findUserByName(username);
+        String email = userDTO.getEmail();
+        infoCustomer.put("email", email);
 
-
+        log.info("response to client: {}, {}, {}", totalAmount, vat, feeShip);
         String orderType = "other";
-        long amount = (long) (totalPrice*100);
+        long amount = (long) ((totalAmount+vat+feeShip)*100);
+
+
+        priceHm.put("totalAmount", totalAmount);
+        priceHm.put("feeShip", feeShip);
+        priceHm.put("vat", vat);
+
 
         String vnp_TxnRef = VnPayConfig.getRandomNumber(8);
         String vnp_IpAddr = "127.0.0.1";
@@ -86,7 +108,7 @@ public class VnPayController {
         Iterator it = fieldsName.iterator();
         while (it.hasNext()) {
             String fieldName = (String)it.next();
-            String fieldValue = (String)vnp_Params.get(fieldName);
+            String fieldValue = vnp_Params.get(fieldName);
             if((fieldValue != null) && (fieldValue.length() > 0)) {
                 // Build hash data
                 hashData.append(fieldName);
@@ -125,16 +147,33 @@ public class VnPayController {
             String vnp_TxnRef = queryParam.get("vnp_TxnRef");
             String infoName = queryParam.get("infoName");
             String infoPhone = queryParam.get("infoPhone");
-
             Long infoAddress = Long.valueOf(queryParam.get("infoAddressId"));
+
             OrderPaymentDTO orderPaymentDTO = new OrderPaymentDTO(infoAddress, infoName, infoPhone,
                     vnp_Amount, vnp_BankCode, vnp_TransactionNo, vnp_OrderInfo, vnp_SecureHash, vnp_PayDate, vnp_TxnRef);
             log.info("TxnRef {}",vnp_TxnRef);
+
+            ///
+            double totalAmount = priceHm.get("totalAmount");
+            double vat = priceHm.get("vat");
+            double feeShip = priceHm.get("feeShip");
+            double totalPrice = totalAmount + vat + feeShip;
+
+
+
+            String email = infoCustomer.get("email");
+
+            ////
+
             if ("00".equals(vnp_ResponseCode)) {
-                orderService.orderPayment(username, orderPaymentDTO);
+                OrderResponseDTO responseDTO =orderService.orderPayment(username, orderPaymentDTO);
+                String identity = responseDTO.getIdentity();
 //                log.info("Redirecting to success page");
 //                response.sendRedirect("https://food-store-front-end.vercel.app/payment/success");
                 response.sendRedirect("http://localhost:3000/payment/success");
+
+                log.info("Check HM: {}, {}, {} = {} via {} order {}",totalAmount, vat, feeShip, totalPrice, email, identity);
+                sendEmail(email, identity, totalAmount, feeShip, vat);
             } else {
 //                log.info("Payment failed, redirecting to failed page");
                 response.sendRedirect("https://food-store-front-end.vercel.app/payment/failed");
@@ -148,4 +187,24 @@ public class VnPayController {
         }
     }
 
+    private void sendEmail(String email,String identity, double totalAmount, double feeShip, double vat){
+        double total = totalAmount + vat + feeShip;
+        String strTotalAmount = currencyUtils.formatCurrency(totalAmount);
+        String strVAT = currencyUtils.formatCurrency(vat);
+        String strFeeShip = currencyUtils.formatCurrency(feeShip);
+        String strTotal = currencyUtils.formatCurrency(total);
+        MailBody mailBody = MailBody.builder()
+                .to(email)
+                .subject("Đặt hàng thành công!")
+                .text("Cảm ơn bạn đã mua hàng!\n" +
+                        "Dưới đây là thông tin đơn hàng của bạn:" +
+                        "\nMã hóa đơn: "+identity+
+                        "\nTổng tiền sản phẩm: "+strTotalAmount+
+                        "\nVAT: "+strVAT+
+                        "\nPhí vận chuyển: "+strFeeShip+
+                        "\nTổng tiền: "+strTotal
+                )
+                .build();
+        emailService.sendSimpleMessage(mailBody);
+    }
 }
