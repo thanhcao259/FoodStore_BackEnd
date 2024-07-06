@@ -100,7 +100,7 @@ public class CategoryController {
     public ResponseEntity<?> updateCategory(Authentication auth,
                                             @PathVariable("id") Long cateId,
                                             @RequestParam(value = "image", required = false) MultipartFile multipartFile,
-                                            @RequestParam("name") String name,
+                                            @RequestParam("name") String name, @RequestParam("identity") String identity,
                                             @RequestParam(value = "description") String description) throws IOException {
         String username = auth.getName();
         CategoryDTO dto = categoryService.getCategoryById(cateId);
@@ -110,7 +110,7 @@ public class CategoryController {
         } else {
             imgUrl = dto.getUrlImage();
         }
-        CategoryDTO categoryDTO = new CategoryDTO(name, description, imgUrl, true);
+        CategoryDTO categoryDTO = new CategoryDTO(name, description, imgUrl, identity);
         try {
             return new ResponseEntity<>(categoryService.updateCategoryById(username, cateId, categoryDTO), HttpStatus.OK);
         } catch (AuthenticationException e) {

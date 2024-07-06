@@ -74,7 +74,7 @@ public class CategoryServiceImpl implements ICategoryService {
     @Override
     public CategoryDTO updateCategoryById(String username, Long id, CategoryDTO categoryDTO) {
         String cateName = categoryDTO.getName();
-        String identity = generateIdentity(cateName);
+//        String identity = generateIdentity(cateName);
         Optional<User> user = userRepository.findByUsername(username);
         if(user.isEmpty()) {
             throw new UserNotFoundException("Not found user: "+username);
@@ -88,7 +88,7 @@ public class CategoryServiceImpl implements ICategoryService {
         category.setName(categoryDTO.getName());
         category.setDescription(categoryDTO.getDescription());
         category.setImage(categoryDTO.getUrlImage());
-        category.setIdentity(identity);
+        category.setIdentity(categoryDTO.getIdentity());
 //        if(!categoryDTO.getUrlImage().isEmpty()){
 //            category.setImage(categoryDTO.getUrlImage());
 //        }
