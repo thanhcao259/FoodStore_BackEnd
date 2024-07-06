@@ -48,6 +48,7 @@ public class ProductMapperImpl implements IProductMapper {
         productResponseDTO.setCategory_id(product.getCategory().getId());
         productResponseDTO.setIdentity(product.getIdentity());
         productResponseDTO.setStatus(product.isStatus());
+        productResponseDTO.setUpdatedDate(product.getUpdatedDate());
 
         // calculate avg rate of each product
         double countRate = 0;

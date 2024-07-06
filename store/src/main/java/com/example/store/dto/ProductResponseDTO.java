@@ -18,7 +18,7 @@ public class ProductResponseDTO {
     private double price;
     private List<ReviewResponseDTO> reviews;
     private String urlImage;
-
+    private ZonedDateTime updatedDate;
     private String description;
     @Value("0")
     private Double rate;
