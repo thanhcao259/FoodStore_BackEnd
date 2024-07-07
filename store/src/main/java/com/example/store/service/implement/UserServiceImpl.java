@@ -126,9 +126,11 @@ public class UserServiceImpl implements IUserService {
         }
         User user = existingUser.get();
 
-        List<Role> roles = new ArrayList<>(user.getRoles());
-        String identity = generateIdentity(roles.get(0).getName(), userDTO.getUsername());
-        user.setIdentity(identity);
+        if( user.getIdentity() == null ) {
+            List<Role> roles = new ArrayList<>(user.getRoles());
+            String identity = generateIdentity(roles.get(0).getName(), userDTO.getUsername());
+            user.setIdentity(identity);
+        }
 
         user.setFullName(userDTO.getFullName());
         user.setEmail(userDTO.getEmail());
