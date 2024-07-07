@@ -1,7 +1,9 @@
 package com.example.store.controllers;
 
 import com.example.store.dto.RegistrationDTO;
+import com.example.store.exception.OTPNotFoundException;
 import com.example.store.exception.UserNameExistedException;
+import com.example.store.exception.UserNotFoundException;
 import com.example.store.service.IRegisterService;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -22,17 +24,32 @@ public class RegistrationController {
     }
 
     @PostMapping
-    public ResponseEntity<?> register(@RequestBody RegistrationDTO registrationDTO){
-        try{
+    public ResponseEntity<?> register(@RequestBody RegistrationDTO registrationDTO) {
+        try {
             registrationService.registration(registrationDTO);
             return new ResponseEntity<Void>(HttpStatus.CREATED);
-        } catch (UserNameExistedException e){
+        } catch (UserNameExistedException e) {
             return new ResponseEntity<Void>(HttpStatus.CONFLICT);
-        } catch (DataIntegrityViolationException e){
+        } catch (DataIntegrityViolationException e) {
             return new ResponseEntity<Void>(HttpStatus.CONFLICT);
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Registration failed");
+        }
+    }
+
+    @PostMapping("/verify")
+    public ResponseEntity<?> checkOtp(@RequestBody RegistrationDTO registrationDTO) {
+        try {
+            boolean isCheck = registrationService.verifyRegister(registrationDTO);
+            return new ResponseEntity<>(isCheck, HttpStatus.OK);
+        } catch (UserNotFoundException | OTPNotFoundException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (UserNameExistedException e) {
+            return new ResponseEntity<Void>(HttpStatus.CONFLICT);
+        } catch (Exception e) {
+//            e.printStackTrace();
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
