@@ -27,4 +27,7 @@ public interface IProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByNameAndStatus(@Param("keyword") String keyword, @Param("status") boolean status);
     @Query("SELECT p FROM Product p WHERE p.name LIKE %:keyword% AND p.status =:status")
     Page<Product> findByNameAndStatus(String keyword, boolean status, Pageable pageable);
+
+    @Query(value = "select c from Category c where c.name like %:name% and c.status =:status")
+    List<Product> findByCategoryAndStatus(String name, boolean status);
 }

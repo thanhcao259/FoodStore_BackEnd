@@ -26,14 +26,11 @@ public class EmailService {
         message.setTo(mailBody.to());
         message.setSubject(mailBody.subject());
         message.setFrom(fromEmail);
-//        log.info("Email service: " + message.getFrom());
         message.setText(mailBody.text());
         try {
             mailSender.send(message);
-//            log.info("Email sent successfully to {}", mailBody.to());
         } catch (Exception e) {
             log.error("Authentication email failed: {}",e.getMessage());
-            e.printStackTrace();
         }
     }
 }

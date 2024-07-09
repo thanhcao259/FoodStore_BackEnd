@@ -202,6 +202,15 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
+    public List<ProductResponseDTO> searchByCategoryAndStatus(String keyword, boolean status) {
+        List<Product> productList = productRepository.findByCategoryAndStatus(keyword, true);
+        if(productList.isEmpty()){
+            throw new ProductNotFoundException("Not found products");
+        } List<ProductResponseDTO> dtoList = productMapper.toResponseDTOs(productList);
+        return dtoList;
+    }
+
+    @Override
     public boolean updateStatus(String username, Long proId) {
         Optional<User> optionalUser = userRepository.findByUsername(username);
         if(optionalUser.isEmpty()){

@@ -18,5 +18,7 @@ public interface IProductService {
     List<ProductResponseDTO> getProductsByCategory(Long cateId);
     List<ProductResponseDTO> searchProduct(String keyword);
 
+    List<ProductResponseDTO> searchByCategoryAndStatus(String keyword, boolean status);
+
     boolean updateStatus(String username, Long proId);
 }

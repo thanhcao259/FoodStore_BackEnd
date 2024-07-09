@@ -69,8 +69,8 @@ public class OrderServiceImpl implements IOrderService {
         Optional<Address> optionalAddress = addressRepository.findByIdAndUserId(orderRequestDTO.getAddressId(), user.getId());
         if (optionalAddress.isEmpty()) {
             throw new AddressNotFoundException("Not found " + orderRequestDTO.getAddressId());
-        }
-        Address address = optionalAddress.get();
+        }  Address address = optionalAddress.get();
+
         // Setup for new order
         Order order = new Order();
         String identity = generateIdentity(ZonedDateTime.now(),username);
@@ -133,7 +133,23 @@ public class OrderServiceImpl implements IOrderService {
         Address address = optionalAddress.get();
         ////
 
-        /// Create new order
+        /* Remove to available product */
+        for (CartItem item : cartItems) {
+            Long proId = item.getProduct().getId();
+            Optional<Product> optionalProduct = productRepository.findById(proId);
+            if (optionalProduct.isEmpty()) {
+                throw new ProductNotFoundException("Not found " + proId);
+            }
+            Product product = optionalProduct.get();
+            if (product.getAvailable() < item.getQuantity()) {
+                throw new VariantProductNotFoundException("Quantity not enough");
+            }
+            product.setAvailable(product.getAvailable() - item.getQuantity());
+            productRepository.save(product);
+        }
+        /*      END      */
+
+        /* Create new order */
         Order order = new Order();
         String identity = generateIdentity(ZonedDateTime.now(), username);
         order.setAddress(address);
@@ -143,6 +159,7 @@ public class OrderServiceImpl implements IOrderService {
         order.setDeliveryTime(ZonedDateTime.now());
         order.setCartItem(cartItems);
         order.setIdentity(identity);
+        /* END */
 
         // Total Price
         double totalPrices = 0.0;
@@ -159,7 +176,6 @@ public class OrderServiceImpl implements IOrderService {
         order.setCartItem(cartItems);
         Optional<StatusOrder> statusOrder = statusOrderRepository.findById(1L);
         order.setStatusOrder(statusOrder.get());
-
         user.getOrders().add(order);
 
         // Payment
@@ -175,20 +191,7 @@ public class OrderServiceImpl implements IOrderService {
         order.setVnPayInfo(vnPayInfo);
         orderRepository.save(order);
         logger.info("PayInfo: {}, {}", vnPayInfo.getVnpTxnRef(), vnPayInfo.getVnpTransactionNo());
-        // Remove to available product
-        for (CartItem item : cartItems) {
-            Long proId = item.getProduct().getId();
-            Optional<Product> optionalProduct = productRepository.findById(proId);
-            if (optionalProduct.isEmpty()) {
-                throw new ProductNotFoundException("Not found " + proId);
-            }
-            Product product = optionalProduct.get();
-            if (product.getAvailable() < item.getQuantity()) {
-                throw new VariantProductNotFoundException("Quantity not enough");
-            }
-            product.setAvailable(product.getAvailable() - item.getQuantity());
-            productRepository.save(product);
-        }
+
         return orderMapper.toResponseDTO(order);
     }
 

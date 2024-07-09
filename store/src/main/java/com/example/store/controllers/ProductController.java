@@ -199,4 +199,15 @@ public class ProductController {
         }
     }
 
+    @GetMapping("/search-by-cate")
+    public ResponseEntity<?> getByCategory(@RequestParam String keyword){
+        try{
+            return new ResponseEntity<>(productService.searchByCategoryAndStatus(keyword, true), HttpStatus.OK);
+        } catch (ProductNotFoundException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }
