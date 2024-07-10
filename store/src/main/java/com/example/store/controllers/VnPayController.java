@@ -21,6 +21,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @RestController
@@ -151,29 +154,46 @@ public class VnPayController {
 
             OrderPaymentDTO orderPaymentDTO = new OrderPaymentDTO(infoAddress, infoName, infoPhone,
                     vnp_Amount, vnp_BankCode, vnp_TransactionNo, vnp_OrderInfo, vnp_SecureHash, vnp_PayDate, vnp_TxnRef);
-            log.info("TxnRef {}",vnp_TxnRef);
 
             ///
             double totalAmount = priceHm.get("totalAmount");
             double vat = priceHm.get("vat");
             double feeShip = priceHm.get("feeShip");
             double totalPrice = totalAmount + vat + feeShip;
+            ZonedDateTime payDate = ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
+            DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd-MMMM-yyyy HH:mm");
+            String strPayDate = fmt.format(payDate);
 
-
+            String strTotalAmount = currencyUtils.formatCurrency(totalAmount);
+            String strVAT = currencyUtils.formatCurrency(vat);
+            String strFeeShip = currencyUtils.formatCurrency(feeShip);
+            String strTotal = currencyUtils.formatCurrency(totalPrice);
 
             String email = infoCustomer.get("email");
+            String subject = "Thank you for purchasing at FoodShop!";
 
             ////
 
             if ("00".equals(vnp_ResponseCode)) {
                 OrderResponseDTO responseDTO =orderService.orderPayment(username, orderPaymentDTO);
                 String identity = responseDTO.getIdentity();
-//                log.info("Redirecting to success page");
-//                response.sendRedirect("https://food-store-front-end.vercel.app/payment/success");
-                response.sendRedirect("http://localhost:3000/payment/success");
 
-                log.info("Check HM: {}, {}, {} = {} via {} order {}",totalAmount, vat, feeShip, totalPrice, email, identity);
-                sendEmail(email, identity, totalAmount, feeShip, vat);
+
+                log.info("Check HM: {}, {}, {} = {} via {} order {}",strTotalAmount, strVAT, strFeeShip, strTotal, email, identity);
+//                sendEmail(email, identity, totalAmount, feeShip, vat);
+
+                Map<String, Object> model = new HashMap<>();
+                model.put("username", username);
+                model.put("identity", identity);
+                model.put("total", strTotal);
+                model.put("totalAmount", strTotalAmount);
+                model.put("vat", strVAT);
+                model.put("feeShip", strFeeShip);
+                model.put("payDate", strPayDate);
+
+                emailService.sendHTMLEmail(email,subject,model);
+            //  response.sendRedirect("https://food-store-front-end.vercel.app/payment/success");
+                response.sendRedirect("http://localhost:3000/payment/success");
             } else {
 //                log.info("Payment failed, redirecting to failed page");
                 response.sendRedirect("https://food-store-front-end.vercel.app/payment/failed");
