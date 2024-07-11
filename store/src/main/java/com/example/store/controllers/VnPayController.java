@@ -2,8 +2,10 @@ package com.example.store.controllers;
 
 import com.example.store.config.VnPayConfig;
 import com.example.store.dto.*;
+import com.example.store.entity.CartItem;
 import com.example.store.service.EmailService;
 import com.example.store.service.IOrderService;
+import com.example.store.service.IProductService;
 import com.example.store.service.IUserService;
 import com.example.store.util.CurrencyUtils;
 import jakarta.servlet.http.HttpServletResponse;
@@ -37,6 +39,8 @@ public class VnPayController {
     private IUserService userService;
     @Autowired
     private CurrencyUtils currencyUtils;
+    @Autowired
+    private IProductService productService;
 
     public VnPayController(IOrderService orderService) {
         this.orderService = orderService;
@@ -172,12 +176,10 @@ public class VnPayController {
             String email = infoCustomer.get("email");
             String subject = "Thank you for purchasing at FoodShop!";
 
-            ////
-
             if ("00".equals(vnp_ResponseCode)) {
                 OrderResponseDTO responseDTO =orderService.orderPayment(username, orderPaymentDTO);
                 String identity = responseDTO.getIdentity();
-
+                List<CartItemsDTO> itemsDTOs = productService.getItemByOrder(identity);
 
                 log.info("Check HM: {}, {}, {} = {} via {} order {}",strTotalAmount, strVAT, strFeeShip, strTotal, email, identity);
 //                sendEmail(email, identity, totalAmount, feeShip, vat);
@@ -190,6 +192,7 @@ public class VnPayController {
                 model.put("vat", strVAT);
                 model.put("feeShip", strFeeShip);
                 model.put("payDate", strPayDate);
+                model.put("listItem", itemsDTOs);
 
                 emailService.sendHTMLEmail(email,subject,model);
             //  response.sendRedirect("https://food-store-front-end.vercel.app/payment/success");
