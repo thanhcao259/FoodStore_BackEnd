@@ -1,6 +1,7 @@
 package com.example.store.mapper.impl;
 
 import com.example.store.dto.CartItemResponseDTO;
+import com.example.store.dto.CartItemsDTO;
 import com.example.store.entity.CartItem;
 import com.example.store.mapper.ICartItemMapper;
 import org.springframework.stereotype.Component;
@@ -35,5 +36,28 @@ public class CartItemMapperImpl implements ICartItemMapper {
             cartItemResponseDTOs.add(toResponseDTO(cartItem));
         }
         return cartItemResponseDTOs;
+    }
+
+    @Override
+    public CartItemsDTO toDTO(CartItem cartItem) {
+        CartItemsDTO newDto = new CartItemsDTO();
+        newDto.setIdProduct(cartItem.getProduct().getId());
+        newDto.setQuantity(cartItem.getQuantity());
+        newDto.setName(cartItem.getProduct().getName());
+        newDto.setPrice(cartItem.getProduct().getPrice());
+        newDto.setTotalPrice(cartItem.getTotalPrice());
+        newDto.setUrlImage(cartItem.getProduct().getUrlImage());
+        newDto.setProdIdentity(cartItem.getProduct().getIdentity());
+
+        return newDto;
+    }
+
+    @Override
+    public List<CartItemsDTO> toDTOs(List<CartItem> cartItems) {
+        List<CartItemsDTO> dtoList = new ArrayList<>();
+        for(CartItem ci : cartItems){
+            dtoList.add(toDTO(ci));
+        }
+        return dtoList;
     }
 }
