@@ -1,5 +1,6 @@
 package com.example.store.service;
 
+import com.example.store.dto.CartItemsDTO;
 import com.example.store.dto.ListProductPageDTO;
 import com.example.store.dto.ProductRequestDTO;
 import com.example.store.dto.ProductResponseDTO;
@@ -21,4 +22,6 @@ public interface IProductService {
     List<ProductResponseDTO> searchByCategoryAndStatus(String keyword, boolean status);
 
     boolean updateStatus(String username, Long proId);
+    List<ProductResponseDTO> getAllByOrder(String order);
+    List<CartItemsDTO> getItemByOrder(String order);
 }

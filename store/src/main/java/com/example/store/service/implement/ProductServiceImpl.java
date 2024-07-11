@@ -1,14 +1,17 @@
 package com.example.store.service.implement;
 
+import com.example.store.dto.CartItemsDTO;
 import com.example.store.dto.ListProductPageDTO;
 import com.example.store.dto.ProductRequestDTO;
 import com.example.store.dto.ProductResponseDTO;
+import com.example.store.entity.CartItem;
 import com.example.store.entity.Category;
 import com.example.store.entity.Product;
 import com.example.store.entity.User;
 import com.example.store.exception.CategoryNotFoundException;
 import com.example.store.exception.ProductNotFoundException;
 import com.example.store.exception.UserNotFoundException;
+import com.example.store.mapper.ICartItemMapper;
 import com.example.store.mapper.IProductMapper;
 import com.example.store.repository.ICategoryRepository;
 import com.example.store.repository.IProductRepository;
@@ -34,12 +37,13 @@ public class ProductServiceImpl implements IProductService {
     private final IUserRepository userRepository;
     private final IProductMapper productMapper;
     private final ICategoryRepository categoryRepository;
-
-    public ProductServiceImpl(IProductRepository productRepository, IUserRepository userRepository, IProductMapper productMapper, ICategoryRepository categoryRepository) {
+    private final ICartItemMapper cartItemMapper;
+    public ProductServiceImpl(IProductRepository productRepository, IUserRepository userRepository, IProductMapper productMapper, ICategoryRepository categoryRepository, ICartItemMapper cartItemMapper) {
         this.productRepository = productRepository;
         this.userRepository = userRepository;
         this.productMapper = productMapper;
         this.categoryRepository = categoryRepository;
+        this.cartItemMapper = cartItemMapper;
     }
 
     @Transactional
@@ -225,6 +229,20 @@ public class ProductServiceImpl implements IProductService {
             product.setStatus(true);
         } productRepository.save(product);
         return true;
+    }
+
+    @Override
+    public List<ProductResponseDTO> getAllByOrder(String order) {
+//        List<Product> productList = productRepository.findAllByOrderAndProduct(order);
+//        List<ProductResponseDTO> dtoList = productMapper.toResponseDTOs(productList);
+//        return dtoList;
+        return List.of();
+    }
+
+    public List<CartItemsDTO> getItemByOrder(String order){
+        List<CartItem> list = productRepository.findAllByOrderAndProduct(order);
+        List<CartItemsDTO> dtoList = cartItemMapper.toDTOs(list);
+        return dtoList;
     }
 
     private String generateIdentity(String myString) {

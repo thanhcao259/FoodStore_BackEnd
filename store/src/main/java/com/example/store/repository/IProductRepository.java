@@ -1,5 +1,6 @@
 package com.example.store.repository;
 
+import com.example.store.entity.CartItem;
 import com.example.store.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,4 +31,8 @@ public interface IProductRepository extends JpaRepository<Product, Long> {
 
     @Query(value = "select c from Category c where c.name like %:name% and c.status =:status")
     List<Product> findByCategoryAndStatus(String name, boolean status);
+
+    @Query(value = "select ci from Order o inner join CartItem ci on o.id = ci.order.id " +
+            "inner join Product p on p.id = ci.product.id where o.identity=?1")
+    List<CartItem> findAllByOrderAndProduct(String order);
 }
