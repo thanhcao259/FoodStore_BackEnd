@@ -3,6 +3,7 @@ package com.example.store.controllers;
 import com.example.store.dto.ProductRequestDTO;
 import com.example.store.dto.ProductResponseDTO;
 import com.example.store.exception.CategoryNotFoundException;
+import com.example.store.exception.OrderNotFoundException;
 import com.example.store.exception.ProductNotFoundException;
 import com.example.store.service.IProductService;
 import com.example.store.service.IUploadFileService;
@@ -204,6 +205,17 @@ public class ProductController {
         try{
             return new ResponseEntity<>(productService.searchByCategoryAndStatus(keyword, true), HttpStatus.OK);
         } catch (ProductNotFoundException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/demo")
+    public ResponseEntity<?> getItemByCart(@RequestParam String order){
+        try {
+            return new ResponseEntity<>(productService.getItemByOrder(order), HttpStatus.OK);
+        } catch (OrderNotFoundException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (Exception e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
