@@ -66,8 +66,6 @@ public class VnPayController {
         log.info("response to client: {}, {}, {}", totalAmount, vat, feeShip);
         String orderType = "other";
         long amount = (long) ((totalAmount+vat+feeShip)*100);
-
-
         priceHm.put("totalAmount", totalAmount);
         priceHm.put("feeShip", feeShip);
         priceHm.put("vat", vat);
