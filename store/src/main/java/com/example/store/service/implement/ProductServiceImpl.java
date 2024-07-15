@@ -117,7 +117,7 @@ public class ProductServiceImpl implements IProductService {
             throw new CategoryNotFoundException("Not found category with id: " + productRequestDTO.getId());
         }
         Category category = existedCate.get();
-        String identity = generateIdentity(category.getName());
+        String identity = generateIdentity(category.getIdentity());
         Product product = productMapper.toEntity(productRequestDTO);
         category.getProducts().add(product);
         product.setCategory(category);
@@ -148,8 +148,10 @@ public class ProductServiceImpl implements IProductService {
             throw new CategoryNotFoundException("Not found category with id: " + productRequestDTO.getCategory_id());
         }
         Category category = optionalCate.get();
+
         String cateIdentity = category.getIdentity();
-//        String productIdentity = generateIdentity(cateIdentity);
+        String productIdentity = generateIdentity(cateIdentity);
+        product.setIdentity(productIdentity);
 
         product.setName(productRequestDTO.getName());
         product.setAvailable(productRequestDTO.getAvailable());
@@ -162,7 +164,7 @@ public class ProductServiceImpl implements IProductService {
         product.setUserUpdated(user);
         product.setUpdatedDate(ZonedDateTime.now());
         product.setCategory(category);
-//        product.setIdentity(productIdentity);
+
 
         Product savedProduct = productRepository.save(product);
         return productMapper.toResponseDTO(savedProduct);
