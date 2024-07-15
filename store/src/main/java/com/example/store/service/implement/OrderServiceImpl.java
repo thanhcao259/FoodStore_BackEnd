@@ -153,7 +153,7 @@ public class OrderServiceImpl implements IOrderService {
         Order order = new Order();
         String identity = generateIdentity(ZonedDateTime.now(), username);
         order.setAddress(address);
-        order.setName(orderPaymentDTO.getName());
+        order.setName(username);
         order.setUser(user);
         order.setPhone(orderPaymentDTO.getPhone());
         order.setDeliveryTime(ZonedDateTime.now());
