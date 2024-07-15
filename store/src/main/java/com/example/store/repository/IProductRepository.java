@@ -18,9 +18,11 @@ public interface IProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByPriceBetween(double minPrice, double maxPrice);
     @Query("select p from Product p where p.category.id = ?1 and p.status = ?2")
     List<Product> findByCategoryIdAndStatus(Long idCategory, boolean status);
-    Page<Product> findByCategoryId(Long cateId, Pageable pageable);
+    @Query("select p from Product p where p.category.id = ?1 and p.status = ?2")
+    Page<Product> findByCategoryId(Long cateId, boolean status, Pageable pageable);
 
-
+    @Query("select p from Product p where p.status = ?1")
+    Page<Product> findAllByStatus(boolean status, Pageable pageable);
     @Query("select p from Product p where p.status = ?1")
     List<Product> findAllByStatus(boolean status);
 

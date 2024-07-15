@@ -28,9 +28,7 @@ public class RegistrationController {
         try {
             registrationService.registration(registrationDTO);
             return new ResponseEntity<Void>(HttpStatus.CREATED);
-        } catch (UserNameExistedException e) {
-            return new ResponseEntity<Void>(HttpStatus.CONFLICT);
-        } catch (DataIntegrityViolationException e) {
+        } catch (UserNameExistedException | DataIntegrityViolationException e) {
             return new ResponseEntity<Void>(HttpStatus.CONFLICT);
         } catch (Exception e) {
             e.printStackTrace();

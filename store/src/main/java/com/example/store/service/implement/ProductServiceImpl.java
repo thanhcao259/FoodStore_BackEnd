@@ -80,13 +80,13 @@ public class ProductServiceImpl implements IProductService {
         if (cateId == null) {
             List<Product> products = productRepository.findAllByStatus(true);
             int pageSizes = (int) Math.ceil((double) products.size() / pageSize);
-            Page<Product> productsPageable = productRepository.findAll(pageable);
+            Page<Product> productsPageable = productRepository.findAllByStatus(true, pageable);
             List<Product> productsContent = productsPageable.getContent();
             return new ListProductPageDTO(productMapper.toResponseDTOs(productsContent), pageSizes);
         }
         List<Product> productByCate = productRepository.findByCategoryIdAndStatus(cateId, true);
         int pageSizes = (int) Math.ceil((double) productByCate.size() / pageSize);
-        Page<Product> productPage = productRepository.findByCategoryId(cateId, pageable);
+        Page<Product> productPage = productRepository.findByCategoryId(cateId, true, pageable);
         List<Product> productsContent = productPage.getContent();
         return new ListProductPageDTO(productMapper.toResponseDTOs(productsContent), pageSizes);
     }
