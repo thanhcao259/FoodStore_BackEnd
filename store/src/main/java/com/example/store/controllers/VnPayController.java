@@ -193,8 +193,8 @@ public class VnPayController {
                 model.put("listItem", itemsDTOs);
 
                 emailService.sendHTMLEmail(email,subject,model);
-            //  response.sendRedirect("https://food-store-front-end.vercel.app/payment/success");
-                response.sendRedirect("http://localhost:3000/payment/success");
+              response.sendRedirect("https://food-store-front-end.vercel.app/payment/success");
+//              response.sendRedirect("http://localhost:3000/payment/success");
             } else {
 //                log.info("Payment failed, redirecting to failed page");
                 response.sendRedirect("https://food-store-front-end.vercel.app/payment/failed");
@@ -203,7 +203,7 @@ public class VnPayController {
         } catch (Exception e) {
             log.error("Exception during payment callback processing", e);
             e.printStackTrace();
-//            response.sendRedirect("https://food-store-front-end.vercel.app/payment/failed");
+            response.sendRedirect("https://food-store-front-end.vercel.app/payment/failed");
             response.sendRedirect("http://localhost:3000/payment/failed");
         }
     }
