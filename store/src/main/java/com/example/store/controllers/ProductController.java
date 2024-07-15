@@ -50,7 +50,7 @@ public class ProductController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @GetMapping("/admin/products/get-all")
+    @GetMapping("/products/get-all")
     public ResponseEntity<?> getAllByAdmin() {
         try {
             List<ProductResponseDTO> products = productService.getAllByAdmin();
