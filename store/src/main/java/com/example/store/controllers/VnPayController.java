@@ -103,7 +103,7 @@ public class VnPayController {
         String vnp_CreateDate = fmt.format(calendar.getTime());
         vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
 
-        calendar.add(Calendar.MINUTE, 15);
+        calendar.add(Calendar.HOUR, 15);
         String vnp_Exp = fmt.format(calendar.getTime());
         vnp_Params.put("vnp_ExpireDate", vnp_Exp);
 
