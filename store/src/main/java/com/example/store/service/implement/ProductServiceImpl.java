@@ -149,9 +149,12 @@ public class ProductServiceImpl implements IProductService {
         }
         Category category = optionalCate.get();
 
-        String cateIdentity = category.getIdentity();
-        String productIdentity = generateIdentity(cateIdentity);
-        product.setIdentity(productIdentity);
+        if(product.getIdentity().isEmpty()){
+            String cateIdentity = category.getIdentity();
+            String productIdentity = generateIdentity(cateIdentity);
+            product.setIdentity(productIdentity);
+        }
+
 
         product.setName(productRequestDTO.getName());
         product.setAvailable(productRequestDTO.getAvailable());

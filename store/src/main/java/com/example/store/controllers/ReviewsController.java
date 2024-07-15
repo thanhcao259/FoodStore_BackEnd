@@ -43,18 +43,17 @@ public class ReviewsController {
         }
     }
 
-    @PostMapping(value = "/user/reviews/create-review", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/user/reviews/create-review")
     public ResponseEntity<?> createReview(Authentication auth,
                                           @RequestParam("prodId") Long proId,
                                           @RequestParam("rate") int rate,
-                                          @RequestParam("contentReview") String contentReview,
-                                          @RequestParam(value = "image", required = false) MultipartFile image) {
+                                          @RequestParam("contentReview") String contentReview) {
         try {
             String username = auth.getName();
             String urlImg = "";
-            if (image != null) {
-                urlImg = uploadFileService.uploadFile(image);
-            }
+//            if (image != null) {
+//                urlImg = uploadFileService.uploadFile(image);
+//            }
             ReviewRequestDTO reviewRequestDTO = new ReviewRequestDTO();
             reviewRequestDTO.setUsername(username);
             reviewRequestDTO.setUrlImage(urlImg);
@@ -64,12 +63,12 @@ public class ReviewsController {
             ReviewResponseDTO responseDTO = reviewService.createReview(reviewRequestDTO);
 
             return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         } catch (AuthenticationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
         } catch (ProductNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
