@@ -38,7 +38,7 @@
 //        Optional<Role> existedRoleUser = roleRepository.findById(1L);
 //        if (existedRoleUser.isEmpty()) {
 //            Role roleUser = new Role();
-//            roleUser.setName("USER");
+//            roleUser.setName("CUSTOMER");
 //            roleUser.setDescription("This is the customer");
 //            roleRepository.save(roleUser);
 //        }

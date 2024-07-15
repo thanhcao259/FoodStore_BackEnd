@@ -16,7 +16,9 @@ public class VnPayConfig {
 
 
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    public static String vnp_ReturnUrl = "http://localhost:8082/api/payment/payment-callback";
+//    public static String vnp_ReturnUrl = "http://localhost:8082/api/payment/payment-callback";
+    public static String vnp_ReturnUrl = "https://foodstorebackend-production.up.railway.app/api/payment/payment-callback";
+
     public static String vnp_Version = "2.1.0";
 
     public static String vnp_BankCode = "NCB";
