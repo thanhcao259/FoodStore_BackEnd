@@ -85,6 +85,7 @@ public class RegistrationService implements IRegisterService {
         user.setCart(cart);
         cart.setUser(user);
         user.setCreatedDate(ZonedDateTime.now());
+        user.setUpdatedDate(ZonedDateTime.now());
 
         /* Set exp and otp */
         int newOTP = otpGenerator();

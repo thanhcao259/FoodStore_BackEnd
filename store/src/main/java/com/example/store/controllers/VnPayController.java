@@ -97,7 +97,8 @@ public class VnPayController {
                 +"&infoAddressId="+requestDTO.getAddressId());
         vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
-        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
+//        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
         SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddHHmmss");
         String vnp_CreateDate = fmt.format(calendar.getTime());
         vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
