@@ -89,7 +89,7 @@ public class RegistrationService implements IRegisterService {
         /* Set exp and otp */
         int newOTP = otpGenerator();
         user.setOtp(newOTP);
-        Date exp = new Date(System.currentTimeMillis() + 5 * 60 * 1000);
+        Date exp = new Date(System.currentTimeMillis() + 10 * 60 * 1000);
         user.setExpiration(exp);
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
