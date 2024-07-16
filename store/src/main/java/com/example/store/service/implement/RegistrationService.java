@@ -91,7 +91,7 @@ public class RegistrationService implements IRegisterService {
         user.setOtp(newOTP);
 
 //        Date exp = new Date(System.currentTimeMillis() + 10 * 60 * 1000);
-        ZonedDateTime exp = zdtNow.plusMinutes(10);
+        ZonedDateTime exp = zdtNow.plusMinutes(3);
         user.setExpiration(Date.from(exp.toInstant()));
 
         Timer timer = new Timer();
