@@ -24,10 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.util.*;
 
 @Service
@@ -84,14 +81,19 @@ public class RegistrationService implements IRegisterService {
         user.setStatus(false);
         user.setCart(cart);
         cart.setUser(user);
-        user.setCreatedDate(ZonedDateTime.now());
-        user.setUpdatedDate(ZonedDateTime.now());
+        ZonedDateTime zdtNow = ZonedDateTime.now(ZoneId.of("UTC"));
+        user.setCreatedDate(zdtNow);
+        user.setUpdatedDate(zdtNow);
 
         /* Set exp and otp */
+
         int newOTP = otpGenerator();
         user.setOtp(newOTP);
-        Date exp = new Date(System.currentTimeMillis() + 10 * 60 * 1000);
-        user.setExpiration(exp);
+
+//        Date exp = new Date(System.currentTimeMillis() + 10 * 60 * 1000);
+        ZonedDateTime exp = zdtNow.plusMinutes(10);
+        user.setExpiration(Date.from(exp.toInstant()));
+
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
@@ -99,7 +101,7 @@ public class RegistrationService implements IRegisterService {
                 userRepository.delete(user);
                 log.info("Both OTP and Expiration are set NULL");
             }
-        }, exp);
+        }, Date.from(exp.toInstant()));
         //setOTPAndExpiration(registrationDTO.getEmail());
         /* End */
         userRepository.save(user);
