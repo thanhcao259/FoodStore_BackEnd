@@ -81,7 +81,7 @@ public class RegistrationService implements IRegisterService {
         user.setStatus(false);
         user.setCart(cart);
         cart.setUser(user);
-        ZonedDateTime zdtNow = ZonedDateTime.now(ZoneId.of("UTC"));
+        ZonedDateTime zdtNow = ZonedDateTime.now(ZoneId.of("US/Eastern"));
         user.setCreatedDate(zdtNow);
         user.setUpdatedDate(zdtNow);
 
